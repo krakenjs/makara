@@ -1,0 +1,312 @@
+<div class="container-fluid">
+    <h1>Vault (Protected Packages)</h1>
+
+    <div class="row-fluid">
+
+        <p>The <a href="https://github.paypal.com/ertoth/node-vault">vault module</a> is the Node.js implementation of Protected
+            Packages. Protected packages are the mechanism by which sensitive information (such as certificates, auth tokens, etc.)
+            is packaged and deployed for use by applications at PayPal.</p>
+
+        <h2>Installing the Module</h2>
+        <p>The vault module is available via PayPal's npm registry:</p>
+        <pre><code>$ npm install vault --save --registry http://npm.paypal.com</code></pre>
+
+
+        <h2>API</h2>
+
+        <h3>Vault</h3>
+        <h4><code>vault.create(options, callback)</code></h4>
+        <p>To get decrypted values from the vault, you first need to create a package from which to read.</p>
+<pre><code>
+    var vault = require('vault');
+
+    var options = {
+    name:       'fooserv',
+    dir:        path.join(process.cwd(), 'protected'),
+    passphrase: undefined, // cert passphrase [optional]
+    pinName:    undefined, // environment variable that will hold the pin [optional] (defaults to {NAME}_PIN: so FOOSERV_PIN)
+    pin:        undefined  // actual pin [optional]
+    };
+
+    vault.create(options, function (err, package) {
+    // Can now read from the package API
+    var secret = package.getString('encrypted_secret');
+    });
+</code></pre>
+
+        <h3>Package Object</h3>
+
+        <h4><code>pkg.containsKey(key)</code></h4>
+        <p>Returns true if the package contains the provided key, or false if not.</p>
+<pre><code>// get a package...
+    var exists = pkg.containsKey('username');     // true
+    exists = pkg.containsKey('encrypted_secret'); // false
+    exists = pkg.containsKey('b64_key');          // true
+</code></pre>
+
+
+        <h4><code>pkg.get(key)</code></h4>
+        <p>Returns the value for the provided key or <code>undefined</code> if none found. Base64-encoded or encrypted values (keys prefixed with 'b64_' or 'encrypted_') will be returned as Buffers, all other values will be returned as-is.</p>
+<pre><code>// get a package...
+    var secret = pkg.get('secret');              // string
+    var encrypted = pkg.get('encrypted_secret'); // Buffer
+    var raw = pkg.get('b64_key');                // Buffer
+</code></pre>
+
+        <h4><code>pkg.getString(key)</code></h4>
+        <p>Returns values in string form. Base64-encoded or encrypted values (keys prefixed with 'b64_' or 'encrypted_') will be
+            returned as base64-encoded strings and non-string types will be coerced.</p>
+<pre><code>// get a package...
+    secret = pkg.getString('secret');              // string
+    encrypted = pkg.getString('encrypted_secret'); // base64-encoded string
+    raw = pkg.getString('b64_key');                // base64-encoded string
+</code></pre>
+
+
+        <h4><code>pkg.getBytes(key)</code></h4>
+        <p>Returns values as Buffers for base64 and string values, and remaining types will be returned unchanged.</p>
+<pre><code>// get a package...
+    secret = pkg.getBytes('secret');              // Buffer
+    encrypted = pkg.getBytes('encrypted_secret'); // Buffer
+    raw = pkg.getBytes('b64_key');                // Buffer
+</code></pre>
+
+
+        <h4><code>pkg.getClientCredentials()</code></h4>
+        <p>Returns an object in the <a href="http://nodejs.org/api/crypto.html#crypto_crypto_createcredentials_details">credentials details</a> format.</p>
+<pre><code>// get a package...
+    var creds = pkg.getClientCredentials(); // Object
+    var options = {
+    method: 'GET',
+    path: '/',
+    passphrase: creds.passphrase,
+    key: creds.key,
+    cert: creds.cert,
+    ca: creds.ca
+    };
+
+    var req = https.request(creds, function (res) {
+    // ...
+    });
+    req.end();
+</code></pre>
+
+
+        <h4><code>pkg.getServerCredentials()</code></h4>
+        <p>Returns an object in the <a href="http://nodejs.org/api/crypto.html#crypto_crypto_createcredentials_details">credentials
+            details</a> format.</p>
+<pre><code>// get a package...
+    var creds = pkg.getServerCredentials(); // Object
+    var server = https.createServer(creds);
+</code></pre>
+
+    </div>
+</div>
+<div class="container-fluid">
+    <h1>Vault (Protected Packages)</h1>
+
+    <div class="row-fluid">
+
+        <p>The <a href="https://github.paypal.com/ertoth/node-vault">vault module</a> is the Node.js implementation of Protected
+            Packages. Protected packages are the mechanism by which sensitive information (such as certificates, auth tokens, etc.)
+            is packaged and deployed for use by applications at PayPal.</p>
+
+        <h2>Installing the Module</h2>
+        <p>The vault module is available via PayPal's npm registry:</p>
+        <pre><code>$ npm install vault --save --registry http://npm.paypal.com</code></pre>
+
+
+        <h2>API</h2>
+
+        <h3>Vault</h3>
+        <h4><code>vault.create(options, callback)</code></h4>
+        <p>To get decrypted values from the vault, you first need to create a package from which to read.</p>
+<pre><code>
+    var vault = require('vault');
+
+    var options = {
+    name:       'fooserv',
+    dir:        path.join(process.cwd(), 'protected'),
+    passphrase: undefined, // cert passphrase [optional]
+    pinName:    undefined, // environment variable that will hold the pin [optional] (defaults to {NAME}_PIN: so FOOSERV_PIN)
+    pin:        undefined  // actual pin [optional]
+    };
+
+    vault.create(options, function (err, package) {
+    // Can now read from the package API
+    var secret = package.getString('encrypted_secret');
+    });
+</code></pre>
+
+        <h3>Package Object</h3>
+
+        <h4><code>pkg.containsKey(key)</code></h4>
+        <p>Returns true if the package contains the provided key, or false if not.</p>
+<pre><code>// get a package...
+    var exists = pkg.containsKey('username');     // true
+    exists = pkg.containsKey('encrypted_secret'); // false
+    exists = pkg.containsKey('b64_key');          // true
+</code></pre>
+
+
+        <h4><code>pkg.get(key)</code></h4>
+        <p>Returns the value for the provided key or <code>undefined</code> if none found. Base64-encoded or encrypted values (keys prefixed with 'b64_' or 'encrypted_') will be returned as Buffers, all other values will be returned as-is.</p>
+<pre><code>// get a package...
+    var secret = pkg.get('secret');              // string
+    var encrypted = pkg.get('encrypted_secret'); // Buffer
+    var raw = pkg.get('b64_key');                // Buffer
+</code></pre>
+
+        <h4><code>pkg.getString(key)</code></h4>
+        <p>Returns values in string form. Base64-encoded or encrypted values (keys prefixed with 'b64_' or 'encrypted_') will be
+            returned as base64-encoded strings and non-string types will be coerced.</p>
+<pre><code>// get a package...
+    secret = pkg.getString('secret');              // string
+    encrypted = pkg.getString('encrypted_secret'); // base64-encoded string
+    raw = pkg.getString('b64_key');                // base64-encoded string
+</code></pre>
+
+
+        <h4><code>pkg.getBytes(key)</code></h4>
+        <p>Returns values as Buffers for base64 and string values, and remaining types will be returned unchanged.</p>
+<pre><code>// get a package...
+    secret = pkg.getBytes('secret');              // Buffer
+    encrypted = pkg.getBytes('encrypted_secret'); // Buffer
+    raw = pkg.getBytes('b64_key');                // Buffer
+</code></pre>
+
+
+        <h4><code>pkg.getClientCredentials()</code></h4>
+        <p>Returns an object in the <a href="http://nodejs.org/api/crypto.html#crypto_crypto_createcredentials_details">credentials details</a> format.</p>
+<pre><code>// get a package...
+    var creds = pkg.getClientCredentials(); // Object
+    var options = {
+    method: 'GET',
+    path: '/',
+    passphrase: creds.passphrase,
+    key: creds.key,
+    cert: creds.cert,
+    ca: creds.ca
+    };
+
+    var req = https.request(creds, function (res) {
+    // ...
+    });
+    req.end();
+</code></pre>
+
+
+        <h4><code>pkg.getServerCredentials()</code></h4>
+        <p>Returns an object in the <a href="http://nodejs.org/api/crypto.html#crypto_crypto_createcredentials_details">credentials
+            details</a> format.</p>
+<pre><code>// get a package...
+    var creds = pkg.getServerCredentials(); // Object
+    var server = https.createServer(creds);
+</code></pre>
+
+    </div>
+</div>
+<div class="container-fluid">
+    <h1>Vault (Protected Packages)</h1>
+
+    <div class="row-fluid">
+
+        <p>The <a href="https://github.paypal.com/ertoth/node-vault">vault module</a> is the Node.js implementation of Protected
+            Packages. Protected packages are the mechanism by which sensitive information (such as certificates, auth tokens, etc.)
+            is packaged and deployed for use by applications at PayPal.</p>
+
+        <h2>Installing the Module</h2>
+        <p>The vault module is available via PayPal's npm registry:</p>
+        <pre><code>$ npm install vault --save --registry http://npm.paypal.com</code></pre>
+
+
+        <h2>API</h2>
+
+        <h3>Vault</h3>
+        <h4><code>vault.create(options, callback)</code></h4>
+        <p>To get decrypted values from the vault, you first need to create a package from which to read.</p>
+<pre><code>
+    var vault = require('vault');
+
+    var options = {
+    name:       'fooserv',
+    dir:        path.join(process.cwd(), 'protected'),
+    passphrase: undefined, // cert passphrase [optional]
+    pinName:    undefined, // environment variable that will hold the pin [optional] (defaults to {NAME}_PIN: so FOOSERV_PIN)
+    pin:        undefined  // actual pin [optional]
+    };
+
+    vault.create(options, function (err, package) {
+    // Can now read from the package API
+    var secret = package.getString('encrypted_secret');
+    });
+</code></pre>
+
+        <h3>Package Object</h3>
+
+        <h4><code>pkg.containsKey(key)</code></h4>
+        <p>Returns true if the package contains the provided key, or false if not.</p>
+<pre><code>// get a package...
+    var exists = pkg.containsKey('username');     // true
+    exists = pkg.containsKey('encrypted_secret'); // false
+    exists = pkg.containsKey('b64_key');          // true
+</code></pre>
+
+
+        <h4><code>pkg.get(key)</code></h4>
+        <p>Returns the value for the provided key or <code>undefined</code> if none found. Base64-encoded or encrypted values (keys prefixed with 'b64_' or 'encrypted_') will be returned as Buffers, all other values will be returned as-is.</p>
+<pre><code>// get a package...
+    var secret = pkg.get('secret');              // string
+    var encrypted = pkg.get('encrypted_secret'); // Buffer
+    var raw = pkg.get('b64_key');                // Buffer
+</code></pre>
+
+        <h4><code>pkg.getString(key)</code></h4>
+        <p>Returns values in string form. Base64-encoded or encrypted values (keys prefixed with 'b64_' or 'encrypted_') will be
+            returned as base64-encoded strings and non-string types will be coerced.</p>
+<pre><code>// get a package...
+    secret = pkg.getString('secret');              // string
+    encrypted = pkg.getString('encrypted_secret'); // base64-encoded string
+    raw = pkg.getString('b64_key');                // base64-encoded string
+</code></pre>
+
+
+        <h4><code>pkg.getBytes(key)</code></h4>
+        <p>Returns values as Buffers for base64 and string values, and remaining types will be returned unchanged.</p>
+<pre><code>// get a package...
+    secret = pkg.getBytes('secret');              // Buffer
+    encrypted = pkg.getBytes('encrypted_secret'); // Buffer
+    raw = pkg.getBytes('b64_key');                // Buffer
+</code></pre>
+
+
+        <h4><code>pkg.getClientCredentials()</code></h4>
+        <p>Returns an object in the <a href="http://nodejs.org/api/crypto.html#crypto_crypto_createcredentials_details">credentials details</a> format.</p>
+<pre><code>// get a package...
+    var creds = pkg.getClientCredentials(); // Object
+    var options = {
+    method: 'GET',
+    path: '/',
+    passphrase: creds.passphrase,
+    key: creds.key,
+    cert: creds.cert,
+    ca: creds.ca
+    };
+
+    var req = https.request(creds, function (res) {
+    // ...
+    });
+    req.end();
+</code></pre>
+
+
+        <h4><code>pkg.getServerCredentials()</code></h4>
+        <p>Returns an object in the <a href="http://nodejs.org/api/crypto.html#crypto_crypto_createcredentials_details">credentials
+            details</a> format.</p>
+<pre><code>// get a package...
+    var creds = pkg.getServerCredentials(); // Object
+    var server = https.createServer(creds);
+</code></pre>
+
+    </div>
+</div>

@@ -1,0 +1,1 @@
+<p>Foo</p><p>{@helper attr="value"/} {randomData}</p><p>Bar</p><p>Baz</p>

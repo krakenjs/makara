@@ -1,0 +1,1 @@
+(function(){dust.register("precompiled",body_0);function body_0(chk,ctx){return chk.write("<p>Foo</p><p>").helper("helper",ctx,{},{"attr":"value"}).write(" ").reference(ctx.get("randomData"),ctx,"h").write("</p><p>Bar</p><p>Baz</p>");}return body_0;})();
