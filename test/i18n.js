@@ -26,11 +26,11 @@ describe('i18n', function () {
     before(function (next) {
         // Ensure the test case assumes it's being run from application root.
         // Depending on the test harness this may not be the case, so shim.
-        process.chdir(__dirname);
+        //process.chdir(__dirname);
 
         config = {
             fallback: 'en_US',
-            contentPath: path.join(process.cwd(), 'fixtures', 'locales'),
+            contentPath: path.join(process.cwd(), 'test', 'fixtures', 'locales'),
             cache: false
         };
 
@@ -65,7 +65,7 @@ describe('i18n', function () {
 
         before(function () {
             app.set('view engine', 'dust');
-            app.set('views', path.join(process.cwd(), 'fixtures', 'public', 'templates'));
+            app.set('views', path.join(process.cwd(), 'test', 'fixtures', 'public', 'templates'));
             i18n.init(app, config);
         });
 
@@ -187,7 +187,7 @@ describe('i18n', function () {
 
         before(function () {
             app.set('view engine', 'js');
-            app.set('views', path.join(process.cwd(), 'fixtures', 'build', 'templates'));
+            app.set('views', path.join(process.cwd(), 'test', 'fixtures', 'build', 'templates'));
             i18n.init(app, config);
         });
 
@@ -228,7 +228,7 @@ describe('i18n', function () {
         before(function () {
             config.cache = true;
             app.set('view engine', 'dust');
-            app.set('views', path.join(process.cwd(), 'fixtures', 'public', 'templates'));
+            app.set('views', path.join(process.cwd(), 'test', 'fixtures', 'public', 'templates'));
             i18n.init(app, config);
         });
 

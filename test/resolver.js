@@ -13,7 +13,7 @@ describe('resolver', function () {
     before(function () {
         // Ensure the test case assumes it's being run from application root.
         // Depending on the test harness this may not be the case, so shim.
-        process.chdir(__dirname);
+        //process.chdir(__dirname);
     });
 
 
@@ -23,7 +23,7 @@ describe('resolver', function () {
 
         before(function () {
             config = {
-                root: path.join(process.cwd(), 'fixtures', 'public', 'templates'),
+                root: path.join(process.cwd(), 'test', 'fixtures', 'public', 'templates'),
                 ext: 'dust'
             };
         });
@@ -96,7 +96,7 @@ describe('resolver', function () {
 
         before(function () {
             config = {
-                root: path.join(process.cwd(), 'fixtures', 'locales'),
+                root: path.join(process.cwd(), 'test', 'fixtures', 'locales'),
                 ext: 'properties',
                 fallback: 'en-US'
             };
@@ -147,7 +147,7 @@ describe('resolver', function () {
 
         before(function () {
             config = {
-                root: path.join(process.cwd(), 'fixtures', 'locales'),
+                root: path.join(process.cwd(), 'test', 'fixtures', 'locales'),
                 ext: 'properties',
                 fallback: 'en-US'
             };
