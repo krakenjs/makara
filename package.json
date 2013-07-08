@@ -1,10 +1,10 @@
 {
   "name": "dustjs-i18n",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
   "scripts": {
-    "test": "make test"
+    "test": "grunt test"
   },
   "repository": "",
   "keywords": [
@@ -19,13 +19,16 @@
     "chai": "~1.7.1",
     "grunt": "~0.4.1",
     "express": "~3.3.1",
+    "grunt-dustjs": "~0.2.2",
     "grunt-simple-mocha": "~0.4.0",
+    "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0"
   },
   "dependencies": {
     "tagfinder": "~0.0.1",
-    "tater": "git://github.paypal.com/CoreUIE/node-transcoder.git",
-    "ent": "0.0.5"
+    "ent": "0.0.5",
+    "q": "~0.9.6",
+    "tater": "0.0.1"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~1.2.5",

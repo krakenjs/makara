@@ -25,13 +25,33 @@ module.exports = function (grunt) {
             options: {
                 contentPath: ['test/fixtures/locales/**/*.properties']
             }
+        },
+        dustjs: {
+            compile: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'tmp/',
+                        src: '**/*.dust',
+                        dest: '.build/templates',
+                        ext: '.js'
+                    }
+                ]
+            }
+        },
+        clean: {
+            'tmp': 'tmp',
+            'build': '.build/templates'
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-simple-mocha');
+    grunt.loadNpmTasks('grunt-dustjs');
     grunt.loadTasks('./tasks/');
 
-    grunt.registerTask('test', ['jshint', 'simplemocha', 'dustjs-i18n']);
+    grunt.registerTask('i18n', ['clean', 'dustjs-i18n', 'dustjs', 'clean:tmp']);
+    grunt.registerTask('test', ['jshint', 'simplemocha', 'i18n']);
 
 };

@@ -56,8 +56,8 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('test');
-            assert(file, 'A known file was not found');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -65,7 +65,7 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('foobar');
-            assert(!file);
+            assert(!file.file);
         });
 
 
@@ -73,8 +73,8 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('inc/partial');
-            assert(file, 'A known file was not found');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -84,7 +84,7 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('inc/test');
-            assert(!file);
+            assert(!file.file);
         });
 
     });
@@ -107,8 +107,8 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('test');
-            assert(file, 'A known file was not found');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -116,7 +116,7 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('foobar');
-            assert(!file);
+            assert(!file.file);
         });
 
 
@@ -124,8 +124,8 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('country');
-            assert(file, 'A known file was not found');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -133,8 +133,8 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('default');
-            assert(file, 'A known file was not found');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
     });
@@ -165,9 +165,9 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('test', context.locality);
-            assert(file, 'A known file was not found');
-            assert(file.indexOf('CN/zh/test') !== -1, 'Resolver located the wrong file.');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(file.file.indexOf('CN/zh/test') !== -1, 'Resolver located the wrong file.');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -175,7 +175,7 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('foobar', context.locality);
-            assert(!file);
+            assert(!file.file);
         });
 
 
@@ -183,9 +183,9 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('country', context.locality);
-            assert(file, 'A known file was not found');
-            assert(file.indexOf('CN/country') !== -1, 'Resolver located the wrong file.');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(file.file.indexOf('CN/country') !== -1, 'Resolver located the wrong file.');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -193,8 +193,8 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('default', context.locality);
-            assert(file, 'A known file was not found');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -202,9 +202,9 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('en-only', context.locality);
-            assert(file, 'A known file was not found');
-            assert(file.indexOf('US/en/en-only') !== -1, 'Resolver located the wrong file.');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(file.file.indexOf('US/en/en-only') !== -1, 'Resolver located the wrong file.');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
 
@@ -212,9 +212,9 @@ describe('resolver', function () {
             var file;
             res = resolver.create(config);
             file = res.resolve('us-only', context.locality);
-            assert(file, 'A known file was not found');
-            assert(file.indexOf('US/us-only') !== -1, 'Resolver located the wrong file.');
-            assert(fs.existsSync(file), 'The resolved file does not exist on disk.');
+            assert(file.file, 'A known file was not found');
+            assert(file.file.indexOf('US/us-only') !== -1, 'Resolver located the wrong file.');
+            assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
         });
 
     });

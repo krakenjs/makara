@@ -1,20 +1,26 @@
 'use strict';
 
 
-var fs = require('fs'),
+var Q = require('q'),
+    fs = require('fs'),
     path = require('path'),
     tagfinder = require('tagfinder'),
+    util = require('../lib/util'),
+    fileutil = require('../lib/fileutil'),
+    qutil = require('../lib/qutil'),
     content = require('../lib/contentBundle'),
-    handler = require('../lib/handler');
+    handler = require('../lib/handler/default');
+
 
 
 module.exports = function (grunt) {
 
 
-    grunt.registerMultiTask('dustjs-i18n', 'An i18n preprocessor for Dust.js templates.', function () {
-        var that, done, options, bundles, bundleRoot;
 
-        that = this;
+
+    grunt.registerMultiTask('dustjs-i18n', 'An i18n preprocessor for Dust.js templates.', function () {
+        var done, options, bundles, bundleRoot;
+
         done = this.async();
         options = this.options({
             fallback: 'en_US',
@@ -22,195 +28,261 @@ module.exports = function (grunt) {
             tmpDir: 'tmp'
         });
 
-
         bundles = grunt.file.expand(options.contentPath);
-        bundleRoot = removeLocale(commonRoot(bundles));
+        bundleRoot = fileutil.findCommonRoot(bundles, true);
 
-        loadContent(bundleRoot, function (err, content) {
 
-            that.files.forEach(function (file) {
-                var templates, templateRoot;
+        function processTemplate(metadata) {
+            var deferred = Q.defer();
 
-                templates = file.src;
-                templateRoot = commonRoot(templates);
+            tagfinder.parse(metadata.src, handler.create(metadata.bundle), function (err, result) {
+                if (err) {
+                    deferred.reject(err);
+                    return;
+                }
 
-                grunt.util.async.map(templates, function (file, next) {
-                    var relative;
-
-                    relative = file.replace(templateRoot, '');
-                    if (relative[0] === path.sep) {
-                        relative = relative.substr(1);
-                    }
-
-                    var tasks = [];
-
-                    Object.keys(content).forEach(function (cn) {
-                        var country = content[cn];
-
-                        if (cn === 'bundle') {
-                            return;
-                        }
-
-                        Object.keys(country).forEach(function (lang) {
-                            var name, contentBundle;
-
-                            if (lang === 'bundle') {
-                                return;
-                            }
-
-                            name = path.basename(relative, '.dust');
-                            contentBundle = country[lang].bundle[name] || country.bundle[name] || content.bundle[name];
-
-                            function parseTask(next) {
-                                tagfinder.parse(file, handler.create(contentBundle), function (err, result) {
-                                    if (err) {
-                                        next(err);
-                                        return;
-                                    }
-
-                                    grunt.file.write(path.join(options.tmpDir, cn, lang, relative), result);
-                                    next();
-                                });
-                            }
-
-                            tasks.push(parseTask);
-                        });
-                    });
-
-                    next(null, tasks);
-
-                }, function (err, taskSet) {
-                    grunt.util.async.parallel(Array.prototype.concat.apply([], taskSet), done);
-                });
+                grunt.file.write(path.join(options.tmpDir, metadata.dest), result);
+                deferred.resolve(metadata);
             });
-        });
+
+            return deferred.promise;
+        }
+
+
+        fileutil
+            .traverse(bundleRoot)
+            .then(qutil.recursify(content.decorate))
+            .then(contentify)
+            .then(Permuter.promise(this.filesSrc))
+            .then(qutil.recursify(processTemplate))
+            .done(
+                function () {
+                    done();
+                },
+                function (err) {
+                    done(!err);
+                }
+            );
+
     });
 
 
-    function commonRoot(paths) {
-        var root;
+};
 
-        paths.forEach(function (filePath) {
-            var prev, curr;
 
-            prev = [];
-            curr = path.dirname(filePath).split(path.sep);
+/**
+ * Recursified wrapper for content-traversing implementation.
+ * @param info
+ * @returns {{}}
+ */
+function contentify(info) {
+    var data = {};
+    qutil.recursify(_contentify)(info, data);
+    return data;
+}
 
-            if (!root) {
-                root = curr;
-                return;
-            }
 
-            root.some(function (dir, idx) {
-                if (dir === curr[idx]) {
-                    prev.push(dir);
-                    return false;
-                }
-                return true;
-            });
+/**
+ * Traverses content hierarchy as read from filesystem to create a data structure
+ * more useful when processing templates.
+ * @param info
+ * @param data
+ * @returns {*}
+ * @private
+ */
+function _contentify(info, data) {
+    var depth, dir, dirs, name;
 
-            root = prev;
+    data = data || {};
+    // Hidden arg added by recursify.
+    depth = arguments[2] || 0;
+
+    // File
+    dir = path.dirname(info.file);
+    dirs = [];
+
+    name = path.basename(info.file);
+    name = name.replace(path.extname(info.file), '');
+
+    // Walk up the path, excluding original root (magic number 1)
+    while (depth > 1) {
+        // Prepend name with dirnames deeper that 3 levels:
+        // root (1, above) + country + lang directories. (magic number 3)
+        if (depth > 3) {
+            // Use forward slash instead of platform separators as actual
+            // bundle/template names exclusively use forward-slash.
+            name = path.basename(dir) + '/' + name;
+        }
+
+        // Only preserve the top two directories (country + lang),
+        // so pop superfluous values (magic number 1)
+        if (dirs.length > 1) {
+            dirs.pop();
+        }
+
+        // Add current dir
+        dirs.unshift(path.basename(dir));
+        dir = path.dirname(dir);
+        depth -= 1;
+    }
+
+    while (dirs.length) {
+        dir = dirs.shift();
+        data = data[dir] || (data[dir] = {});
+    }
+
+    if (!data.bundle) {
+        Object.defineProperty(data, 'bundle', {
+            enumerable: false,
+            value: {}
+        });
+    }
+
+    data.bundle[name] = info;
+    return data;
+}
+
+
+function buildContentTree(files, data, depth) {
+    var dir, dirs, name;
+
+    data = data || {};
+    depth = depth || 0;
+
+    if (Array.isArray(files)) {
+        // Directory
+        files.forEach(function (info) {
+            buildContentTree(info, data, depth + 1);
         });
 
-        return root.join(path.sep);
-    }
+    } else {
+        // File
+        dir = path.dirname(files.file);
+        dirs = [];
 
+        name = path.basename(files.file);
+        name = name.replace(path.extname(files.file), '');
 
-    function removeLocale(dir) {
-        var match = dir.match(/^.*?(?=' + path.sep + '[A-Za-z][A-Za-z])/);
-        return match ? match[0] : dir;
-    }
-
-
-    function loadContent(root, subdir, dest, depth, callback) {
-        if (typeof subdir === 'function') {
-            dest = subdir;
-            subdir = '';
-        }
-
-        if (typeof dest === 'function') {
-            depth = dest;
-            dest = {};
-        }
-
-        if (typeof depth === 'function') {
-            callback = depth;
-            depth = 0;
-        }
-
-        fs.readdir(root, function (err, files) {
-            var tasks;
-
-            if (err) {
-                callback(err);
-                return;
+        // Walk up the path, excluding original root (magic number 1)
+        while (depth > 1) {
+            // Prepend name with dirnames deeper that 3 levels:
+            // root (1, above) + country + lang directories. (magic number 3)
+            if (depth > 3) {
+                // Use forward slash instead of platform separators as actual
+                // bundle/template names exclusively use forward-slash.
+                name = path.basename(dir) + '/' + name;
             }
 
-            tasks = [];
+            // Only preserve the top two directories (country + lang),
+            // so pop superfluous values (magic number 1)
+            if (dirs.length > 1) {
+                dirs.pop();
+            }
 
-            files.forEach(function (file) {
-                var filePath = path.join(root, file);
+            // Add current dir
+            dirs.unshift(path.basename(dir));
+            dir = path.dirname(dir);
+            depth -= 1;
+        }
 
-                function directoryTask(next) {
-                    var content, sub;
+        while (dirs.length) {
+            dir = dirs.shift();
+            data = data[dir] || (data[dir] = {});
+        }
 
-                    content = dest;
-                    sub = subdir;
+        if (!data.bundle) {
+            Object.defineProperty(data, 'bundle', {
+                enumerable: false,
+                value: {}
+            });
+        }
 
-                    if (depth < 3) {
-                        // XXX - Magic number 2 is the depth of locale dirs (US/en) from root.
-                        // Still traversing locale dirs
-                        content = content[file] = {};
-                    } else {
-                        // Traversing bundles
-                        sub = path.join(sub, file);
-                    }
+        data.bundle[name] = files;
+    }
 
-                    loadContent(filePath, sub, content, depth += 1, next);
+    return data;
+}
+
+
+
+
+
+/**
+ * Generates all permutations of country/language/template and
+ * maps them to metadata objects with the structure:
+ * {
+ *   src: String,
+ *   dest: String,
+ *   bundle: Object
+ * }
+ * where `src` is the source template file, `dest` is the path of where
+ * the localized template should be written, and `bundle` is the content
+ * bundle associated with that particular template.
+ * @type {{create: Function, promise: Function}}
+ */
+var Permuter = {
+    _proto: {
+
+        permute: function (content) {
+            var metadata, root;
+
+            metadata = [];
+            root = this.root;
+
+            this.files.forEach(function (file) {
+                var relative, name;
+
+                relative = file.replace(root, '');
+                if (relative[0] === path.sep) {
+                    relative = relative.substr(1);
                 }
 
+                name = relative.replace(path.extname(relative), '');
 
-                function fileTask(next) {
-                    var bundleName = path.basename(file, '.properties');
-                    if (bundleName === file) {
-                        // not a .properties file, so skip to next task
-                        next();
-                        return;
-                    }
-
-                    // Read content
-                    content.create(filePath, function (err, bundle) {
-                        if (err) {
-                            next(err);
-                            return;
-                        }
-                        dest.bundle = dest.bundle || {};
-                        dest.bundle[path.join(subdir, bundleName)] = bundle;
-                        next();
-                    });
-                }
-
-
-                function stat(err, stats) {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
-
-                    tasks.push(stats.isDirectory() ? directoryTask : fileTask);
-
-                    if (files.length === tasks.length) {
-                        grunt.util.async.parallel(tasks, function (err) {
-                            callback(err, dest);
+                Object.keys(content).forEach(function (cn) {
+                    Object.keys(content[cn]).forEach(function (lang) {
+                        metadata.push({
+                            src: file,
+                            dest: path.join(cn, lang, relative),
+                            bundle: content[cn][lang].bundle[name] || content[cn].bundle[name] || content.bundle[name]
                         });
-                    }
-                }
-
-                fs.stat(filePath, stat);
+                    });
+                });
             });
 
-        });
+            return metadata;
+        }
+    },
+
+    /**
+     * Creates a `permuter` object which will process the specified files.
+     * @param files the files for which to create country/lang permutations
+     * @returns {*} a `permuter` instance
+     */
+    create: function (files) {
+        return Object.create(Permuter._proto, {
+            files: {
+                value: files
+            },
+            root: {
+                value: fileutil.findCommonRoot(files)
+            }
+        })
+    },
+
+    /**
+     * Creates a `permuter` promise which processes the permutations for the provided
+     * files and resolves to the predefined metadata object.
+     * @param files the files for which to create country/lang permutations
+     * @returns {Function} a permuter promise
+     */
+    promise: function (files) {
+        var permuter = this.create(files);
+
+        return function (content) {
+            var deferred = Q.defer();
+            deferred.resolve(permuter.permute(content));
+            return deferred.promise;
+        }
     }
-
-
 };

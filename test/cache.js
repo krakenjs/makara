@@ -37,8 +37,8 @@ describe('cache', function () {
 
 
     it('should create a cache', function () {
-        dustjs.onLoad = provider;
-        cache.decorate(dustjs, config);
+        var tmplCache = cache.create(provider, config.fallback);
+        dustjs.onLoad = tmplCache.get.bind(tmplCache);
     });
 
 

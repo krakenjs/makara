@@ -2,6 +2,7 @@ node_modules
 tmp
 .idea
 .settings
+.build
 logs
 test/fixtures/.build
 *.log
