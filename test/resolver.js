@@ -10,12 +10,6 @@ describe('resolver', function () {
 
     var res;
 
-    before(function () {
-        // Ensure the test case assumes it's being run from application root.
-        // Depending on the test harness this may not be the case, so shim.
-        //process.chdir(__dirname);
-    });
-
 
     describe('with no fallback', function () {
 

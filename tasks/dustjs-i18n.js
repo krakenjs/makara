@@ -6,16 +6,14 @@ var Q = require('q'),
     path = require('path'),
     tagfinder = require('tagfinder'),
     util = require('../lib/util'),
-    fileutil = require('../lib/fileutil'),
     qutil = require('../lib/qutil'),
-    content = require('../lib/contentBundle'),
+    fileutil = require('../lib/fileutil'),
+    bundle = require('../lib/provider/bundle'),
     handler = require('../lib/handler/default');
 
 
 
 module.exports = function (grunt) {
-
-
 
 
     grunt.registerMultiTask('dustjs-i18n', 'An i18n preprocessor for Dust.js templates.', function () {
@@ -35,7 +33,7 @@ module.exports = function (grunt) {
         function processTemplate(metadata) {
             var deferred = Q.defer();
 
-            tagfinder.parse(metadata.src, handler.create(metadata.bundle), function (err, result) {
+            tagfinder.parse(metadata.src, handler.create(metadata.provider), function (err, result) {
                 if (err) {
                     deferred.reject(err);
                     return;
@@ -51,7 +49,7 @@ module.exports = function (grunt) {
 
         fileutil
             .traverse(bundleRoot)
-            .then(qutil.recursify(content.decorate))
+            .then(qutil.recursify(bundle.create))
             .then(contentify)
             .then(Permuter.promise(this.filesSrc))
             .then(qutil.recursify(processTemplate))
@@ -60,6 +58,7 @@ module.exports = function (grunt) {
                     done();
                 },
                 function (err) {
+                    console.dir(err.stack);
                     done(!err);
                 }
             );
@@ -72,12 +71,12 @@ module.exports = function (grunt) {
 
 /**
  * Recursified wrapper for content-traversing implementation.
- * @param info
+ * @param bundle
  * @returns {{}}
  */
-function contentify(info) {
+function contentify(bundle) {
     var data = {};
-    qutil.recursify(_contentify)(info, data);
+    qutil.recursify(_contentify)(bundle, data);
     return data;
 }
 
@@ -85,24 +84,27 @@ function contentify(info) {
 /**
  * Traverses content hierarchy as read from filesystem to create a data structure
  * more useful when processing templates.
- * @param info
+ * @param bundle
  * @param data
  * @returns {*}
  * @private
  */
-function _contentify(info, data) {
-    var depth, dir, dirs, name;
+function _contentify(bundle, data) {
+    var depth, file, dir, dirs, name;
+
 
     data = data || {};
+
     // Hidden arg added by recursify.
     depth = arguments[2] || 0;
 
     // File
-    dir = path.dirname(info.file);
+    file = bundle.file;
+    dir = path.dirname(file);
     dirs = [];
 
-    name = path.basename(info.file);
-    name = name.replace(path.extname(info.file), '');
+    name = path.basename(file);
+    name = name.replace(path.extname(file), '');
 
     // Walk up the path, excluding original root (magic number 1)
     while (depth > 1) {
@@ -138,7 +140,8 @@ function _contentify(info, data) {
         });
     }
 
-    data.bundle[name] = info;
+
+    data.bundle[name] = bundle;
     return data;
 }
 
@@ -244,7 +247,7 @@ var Permuter = {
                         metadata.push({
                             src: file,
                             dest: path.join(cn, lang, relative),
-                            bundle: content[cn][lang].bundle[name] || content[cn].bundle[name] || content.bundle[name]
+                            provider: content[cn][lang].bundle[name] || content[cn].bundle[name] || content.bundle[name]
                         });
                     });
                 });

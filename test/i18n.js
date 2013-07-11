@@ -10,7 +10,7 @@ var fs = require('fs'),
     dustjs = require('express-dustjs');
 
 
-describe('i18n', function () {
+describe.skip('i18n', function () {
 
     var DISABLED = '<p></p><p> </p><p></p><p></p>'; //pre tags get eaten by dust
     var LOCALIZED = '<p>Foo</p><p> </p><p>Bar</p><p>Baz</p>';
