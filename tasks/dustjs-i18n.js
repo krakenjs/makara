@@ -29,7 +29,6 @@ module.exports = function (grunt) {
         bundles = grunt.file.expand(options.contentPath);
         bundleRoot = fileutil.findCommonRoot(bundles, true);
 
-
         function processTemplate(metadata) {
             var deferred = Q.defer();
 
@@ -49,8 +48,8 @@ module.exports = function (grunt) {
 
         fileutil
             .traverse(bundleRoot)
-            .then(qutil.recursify(bundle.create))
-            .then(contentify)
+            .then(qutil.recursify(loadBundles))
+            .then(restrucure)
             .then(Permuter.promise(this.filesSrc))
             .then(qutil.recursify(processTemplate))
             .done(
@@ -69,14 +68,27 @@ module.exports = function (grunt) {
 };
 
 
+function loadBundles(fileInfo) {
+    var deferred = Q.defer();
+    bundle.create(fileInfo).load(function (err, bundle) {
+        if (err) {
+            deferred.reject(err);
+            return;
+        }
+        deferred.resolve(bundle);
+    });
+    return deferred.promise;
+}
+
+
 /**
  * Recursified wrapper for content-traversing implementation.
  * @param bundle
  * @returns {{}}
  */
-function contentify(bundle) {
+function restrucure(bundle) {
     var data = {};
-    qutil.recursify(_contentify)(bundle, data);
+    qutil.recursify(doRestructure)(bundle, data);
     return data;
 }
 
@@ -89,7 +101,7 @@ function contentify(bundle) {
  * @returns {*}
  * @private
  */
-function _contentify(bundle, data) {
+function doRestructure(bundle, data) {
     var depth, file, dir, dirs, name;
 
 
