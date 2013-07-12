@@ -10,7 +10,7 @@ var fs = require('fs'),
     dustjs = require('express-dustjs');
 
 
-describe.skip('i18n', function () {
+describe('i18n', function () {
 
     var DISABLED = '<p></p><p> </p><p></p><p></p>'; //pre tags get eaten by dust
     var LOCALIZED = '<p>Foo</p><p> </p><p>Bar</p><p>Baz</p>';
@@ -66,7 +66,7 @@ describe.skip('i18n', function () {
         before(function () {
             app.set('view engine', 'dust');
             app.set('views', path.join(process.cwd(), 'test', 'fixtures', 'public', 'templates'));
-            i18n.init(app, config);
+            i18n.create(app, config);
         });
 
 
@@ -152,7 +152,7 @@ describe.skip('i18n', function () {
 
             before(function () {
                 config.enableMetadata = true;
-                i18n.init(app, config);
+                i18n.create(app, config);
             });
 
 
@@ -188,7 +188,7 @@ describe.skip('i18n', function () {
         before(function () {
             app.set('view engine', 'js');
             app.set('views', path.join(process.cwd(), 'test', 'fixtures', 'build', 'templates'));
-            i18n.init(app, config);
+            i18n.create(app, config);
         });
 
 
@@ -229,7 +229,7 @@ describe.skip('i18n', function () {
             config.cache = true;
             app.set('view engine', 'dust');
             app.set('views', path.join(process.cwd(), 'test', 'fixtures', 'public', 'templates'));
-            i18n.init(app, config);
+            i18n.create(app, config);
         });
 
 

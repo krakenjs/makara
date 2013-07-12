@@ -35,7 +35,7 @@ describe('API', function () {
         var api = i18n.create(config);
         assert.isObject(api);
         assert.isFunction(api.getBundle);
-        assert.isFunction(api.configureExpress);
+        assert.isFunction(api.localize);
     });
 
 
@@ -84,11 +84,6 @@ describe('API', function () {
                 next();
             });
         });
-
-    });
-
-
-    describe('configureExpress', function () {
 
     });
 

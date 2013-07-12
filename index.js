@@ -5,41 +5,54 @@ var dustjs = require('dustjs-linkedin'),
     engine = require('express-dustjs'),
     cache = require('./lib/cache'),
     views = require('./lib/view'),
-    translator = require('./lib/translator'),
-    provider = require('./lib/provider');
+    provider = require('./lib/provider'),
+    translator = require('./lib/translator');
+
+
+function isExpress(obj) {
+    return typeof obj === 'function' && obj.handle && obj.set;
+}
 
 
 var proto = {
 
-    configureExpress: function (app, config) {
-        var ext, viewCache, trans;
-
-        // For i18n we silently switch to the JS engine for all requests.
-        ext = app.get('view engine');
-        app.engine(ext, engine.js({ cache: false }));
-
-        trans = translator.create(this.contentProvider, app.get('views'), !!config.enableHtmlMetadata);
-        dustjs.onLoad = views[ext].create(app, trans);
-
-        if (this.cache) {
-            viewCache = cache.create(dustjs.onLoad, this.contentProvider.fallbackLocale);
-            dustjs.onLoad = viewCache.get.bind(viewCache);
-        }
-    },
-
     getBundle: function (name, locale, callback) {
         this.contentProvider.getBundle(name, locale).load(callback);
+    },
+
+    localize: function (name, locale, views, callback) {
+        this.templateTranslator.localize(name, locale, views, callback);
     }
 
 };
 
 
+exports.create = function (app, config) {
+    var contentProvider, templateTranslator;
 
-exports.create = function (config) {
-    var contentRoot, fallbackLocale;
+    if (!isExpress(app)) {
+        config = app;
+        app = undefined;
+    }
 
-    contentRoot = config.contentPath || config.contentRoot;
-    fallbackLocale = config.fallback || config.fallbackLocale;
+    config.templateRoot = app ? app.get('views') : (config.templatePath || config.templateRoot);
+    contentProvider = exports.createProvider(config);
+    templateTranslator = exports.createTranslator(contentProvider, config);
+
+    if (app) {
+        var ext, viewCache;
+
+        // For i18n we silently switch to the JS engine for all requests.
+        ext = app.get('view engine');
+        app.engine(ext, engine.js({ cache: false }));
+
+        dustjs.onLoad = views[ext].create(app, templateTranslator);
+
+        if (this.cache) {
+            viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
+            dustjs.onLoad = viewCache.get.bind(viewCache);
+        }
+    }
 
     return Object.create(proto, {
 
@@ -52,8 +65,30 @@ exports.create = function (config) {
         contentProvider: {
             enumerable: true,
             writable: false,
-            value: provider.create(contentRoot, fallbackLocale)
+            value: contentProvider
+        },
+
+        templateTranslator: {
+            enumerable: true,
+            writable: false,
+            value: templateTranslator
         }
 
     });
+};
+
+
+exports.createTranslator = function (provider, config) {
+    var enableMetadata = config.enableMetadata || config.enableHtmlMetadata;
+    return translator.create(provider, (config.templatePath || config.templateRoot), enableMetadata);
+};
+
+
+exports.createProvider = function (config) {
+    var contentRoot, fallbackLocale;
+
+    contentRoot = config.contentPath || config.contentRoot;
+    fallbackLocale = config.fallback || config.fallbackLocale;
+
+    return provider.create(contentRoot, fallbackLocale, config.cache);
 };
