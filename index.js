@@ -28,7 +28,7 @@ var proto = {
 
 
 exports.create = function (app, config) {
-    var contentProvider, templateTranslator;
+    var contentProvider, templateTranslator, ext, viewCache;
 
     if (!isExpress(app)) {
         config = app;
@@ -40,17 +40,17 @@ exports.create = function (app, config) {
     templateTranslator = exports.createTranslator(contentProvider, config);
 
     if (app) {
-        var ext, viewCache;
-
-        // For i18n we silently switch to the JS engine for all requests.
         ext = app.get('view engine');
-        app.engine(ext, engine.js({ cache: false }));
 
-        dustjs.onLoad = views[ext].create(app, templateTranslator);
+        if (views.hasOwnProperty(ext)) {
+            // For i18n we silently switch to the JS engine for all requests.
+            app.engine(ext, engine.js({ cache: false }));
+            dustjs.onLoad = views[ext].create(app, templateTranslator);
 
-        if (this.cache) {
-            viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
-            dustjs.onLoad = viewCache.get.bind(viewCache);
+            if (this.cache) {
+                viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
+                dustjs.onLoad = viewCache.get.bind(viewCache);
+            }
         }
     }
 
@@ -80,7 +80,7 @@ exports.create = function (app, config) {
 
 exports.createTranslator = function (provider, config) {
     var enableMetadata = config.enableMetadata || config.enableHtmlMetadata;
-    return translator.create(provider, (config.templatePath || config.templateRoot), enableMetadata);
+    return translator.create(provider, (config.templatePath || config.templateRoot), !!enableMetadata);
 };
 
 
