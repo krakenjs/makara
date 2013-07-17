@@ -16,107 +16,129 @@ describe('provider', function () {
     });
 
 
-    it('should create an instance', function () {
-        var content = provider.create(contentRoot, fallbackLocale);
-        assert.isObject(content);
+    describe('create', function () {
 
-        content = provider.create(contentRoot, { country: 'US', language: 'en' });
-        assert.isObject(content);
+        it('should accept a locale string', function () {
+            var content = provider.create(contentRoot, 'en_US');
+            assert.isObject(content);
+            assert.isFalse(content.cache);
+            assert.isFalse(content.htmlMetadataEnabled);
+
+        });
+
+
+        it('should accept a locale object', function () {
+            var content = provider.create(contentRoot, { country: 'US', language: 'en' });
+            assert.isObject(content);
+            assert.isFalse(content.cache);
+            assert.isFalse(content.htmlMetadataEnabled);
+        });
+
+
+        it('should support caching', function () {
+            var content = provider.create(contentRoot, { country: 'US', language: 'en' }, true);
+            assert.isObject(content);
+            assert.isTrue(content.cache);
+            assert.isFalse(content.htmlMetadataEnabled);
+        });
+
+
+        it('should support HTML metadata', function () {
+            var content = provider.create(contentRoot, { country: 'US', language: 'en' }, false, true);
+            assert.isObject(content);
+            assert.isFalse(content.cache);
+            assert.isTrue(content.htmlMetadataEnabled);
+        });
+
     });
 
 
-    it('should return a bundle for a given name/locale string', function (next) {
-        var content, bundle;
+    describe('getBundle', function () {
 
-        content = provider.create(contentRoot, fallbackLocale);
-        bundle = content.getBundle('test', 'en_US');
-        assert.isObject(bundle);
+        it('should support optional locale', function () {
+            var content, bundle;
 
-        bundle.load(function (err, bundle) {
-            assert.isNull(err);
+            content = provider.create(contentRoot, fallbackLocale);
+            bundle = content.getBundle('test');
             assert.isObject(bundle);
-            assert.strictEqual(bundle.get('test.value'), 'Foo');
-            next();
         });
-    });
 
 
-    it('should return a bundle for a given name/locale object', function (next) {
-        var content, bundle;
+        it('should accept a locale string', function () {
+            var content, bundle;
 
-        content = provider.create(contentRoot, fallbackLocale);
-        bundle = content.getBundle('test', { country: 'CN', language: 'zh' });
-        assert.isObject(bundle);
-
-        bundle.load(function (err, bundle) {
-            assert.isNull(err);
+            content = provider.create(contentRoot, fallbackLocale);
+            bundle = content.getBundle('test', 'en_US');
             assert.isObject(bundle);
-            assert.strictEqual(bundle.get('test.value'), '請');
-            next();
         });
-    });
 
 
-    it('should return an error for an invalid bundle', function (next) {
-        var content, bundle;
+        it('should accept a locale object', function () {
+            var content, bundle;
 
-        content = provider.create(contentRoot, fallbackLocale);
-        bundle = content.getBundle('unknown', 'en_US');
-        assert.isObject(bundle);
-
-        bundle.load(function (err, bundle) {
-            assert.isObject(err);
-            assert.isNotObject(bundle);
-            next();
-        });
-    });
-
-
-    it('should return a fallback bundle for a missing locale', function (next) {
-        var content, bundle;
-
-        content = provider.create(contentRoot, 'zh_CN');
-        bundle = content.getBundle('test', 'fr_CA');
-        assert.isObject(bundle);
-
-        bundle.load(function (err, bundle) {
-            assert.isNull(err);
+            content = provider.create(contentRoot, fallbackLocale);
+            bundle = content.getBundle('test', { country: 'US', language: 'en' });
             assert.isObject(bundle);
-            assert.strictEqual(bundle.get('test.value'), '請');
-            next();
         });
-    });
 
 
-    it('should reload bundles when caching disabled', function (next) {
-        var content, bundle;
+        it('should return new bundles when caching is disabled', function () {
+            var content, bundle, otherBundle;
 
-        content = provider.create(contentRoot, fallbackLocale);
-        bundle = content.getBundle('test', 'en_US');
-        assert.isObject(bundle);
+            content = provider.create(contentRoot, fallbackLocale, false);
+            bundle = content.getBundle('test', 'en_US');
+            otherBundle = content.getBundle('test', 'en_US');
 
-        bundle.load(function (err, bundle) {
-            assert.isNull(err);
             assert.isObject(bundle);
-            assert.notEqual(content.getBundle('test', 'en_US'), bundle);
-            next();
+            assert.isObject(otherBundle);
+            assert.notEqual(bundle, otherBundle);
         });
-    });
 
 
-    it('should cache bundles when caching enabled', function (next) {
-        var content, bundle;
+        it('should reuse bundles when caching enabled', function () {
+            var content, bundle, otherBundle;
 
-        content = provider.create(contentRoot, fallbackLocale, true);
-        bundle = content.getBundle('test', 'en_US');
-        assert.isObject(bundle);
+            content = provider.create(contentRoot, fallbackLocale, true);
+            bundle = content.getBundle('test', 'en_US');
+            otherBundle = content.getBundle('test', 'en_US');
 
-        bundle.load(function (err, bundle) {
-            assert.isNull(err);
             assert.isObject(bundle);
-            assert.strictEqual(content.getBundle('test', 'en_US'), bundle);
-            next();
+            assert.isObject(otherBundle);
+            assert.strictEqual(bundle, otherBundle);
         });
+
+
+        it('should add metadata to strings when setting is enabled', function () {
+            var expected, content, bundle;
+
+            expected = '<edit data-key="test.value" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/test.properties" data-original="Foo">Foo</edit>';
+            content = provider.create(contentRoot, fallbackLocale, false, true);
+            bundle = content.getBundle('test', { country: 'US', language: 'en' });
+            assert.isObject(bundle);
+
+            bundle.load(function (err, bundle) {
+                assert.isNull(err);
+                assert.isObject(bundle);
+                assert.strictEqual(bundle.get('test.value'), expected);
+            });
+        });
+
+
+        it('should encode special characters when metadata is enabled', function () {
+            var expected, content, bundle;
+
+            expected = '<edit data-key="test.special" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/test.properties" data-original="Hello, &#123;name&#125;!">Hello, {name}!</edit>';
+            content = provider.create(contentRoot, fallbackLocale, false, true);
+            bundle = content.getBundle('test', { country: 'US', language: 'en' });
+            assert.isObject(bundle);
+
+            bundle.load(function (err, bundle) {
+                assert.isNull(err);
+                assert.isObject(bundle);
+                assert.strictEqual(bundle.get('test.special'), expected);
+            });
+        });
+
     });
 
 });

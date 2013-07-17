@@ -35,7 +35,7 @@ exports.create = function (app, config) {
         app = undefined;
     }
 
-    config.templateRoot = app ? app.get('views') : (config.templatePath || config.templateRoot);
+    config.templateRoot = app ? app.get('views') : config.templateRoot;
     contentProvider = exports.createProvider(config);
     templateTranslator = exports.createTranslator(contentProvider, config);
 
@@ -47,7 +47,7 @@ exports.create = function (app, config) {
             app.engine(ext, engine.js({ cache: false }));
             dustjs.onLoad = views[ext].create(app, templateTranslator);
 
-            if (this.cache) {
+            if (!!config.cache) {
                 viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
                 dustjs.onLoad = viewCache.get.bind(viewCache);
             }
@@ -79,16 +79,16 @@ exports.create = function (app, config) {
 
 
 exports.createTranslator = function (provider, config) {
-    var enableMetadata = config.enableMetadata || config.enableHtmlMetadata;
-    return translator.create(provider, (config.templatePath || config.templateRoot), !!enableMetadata);
+    return translator.create(provider, (config.templateRoot || config.templatePath));
 };
 
 
 exports.createProvider = function (config) {
-    var contentRoot, fallbackLocale;
+    var contentRoot, fallbackLocale, enableMetadata;
 
     contentRoot = config.contentPath || config.contentRoot;
     fallbackLocale = config.fallback || config.fallbackLocale;
+    enableMetadata = config.enableMetadata || config.enableHtmlMetadata;
 
-    return provider.create(contentRoot, fallbackLocale, config.cache);
+    return provider.create(contentRoot, fallbackLocale, config.cache, enableMetadata);
 };

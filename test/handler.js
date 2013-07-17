@@ -105,6 +105,16 @@ describe('handler', function () {
                 it: 'should support the "before," "after," and "sep" attributes',
                 input: '<ul>{@pre type=content key=states before="<li>" after="</li>" sep="\r\n" /}</ul>',
                 expected: '<ul><li>CA</li>\r\n<li>MI</li>\r\n<li>OR</li></ul>'
+            },
+            {
+                it: 'should replace $idx placeholders in values',
+                input: 'Hello: {@pre type="content" key="names" after="->" /}',
+                expected: 'Hello: 0. Larry->1. Moe->2. Curly->'
+            },
+            {
+                it: 'should replace $idx placeholders in before and after attributes, but not sep',
+                input: 'Hello: {@pre type="content" key="names" before="$idx" after="$idx" sep="$idx" /}',
+                expected: 'Hello: 00. Larry0$idx11. Moe1$idx22. Curly2'
             }
         ];
 
@@ -113,7 +123,7 @@ describe('handler', function () {
     });
 
 
-    it('should recognize map types', function () {
+    it.skip('should recognize map types', function () {
 
     });
 
