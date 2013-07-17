@@ -25,13 +25,13 @@
     "grunt-contrib-jshint": "~0.6.0"
   },
   "dependencies": {
-    "tagfinder": "~0.0.1",
+    "tagfinder": "~0.0.6",
     "ent": "0.0.5",
     "q": "~0.9.6",
     "tater": "0.0.1"
   },
   "peerDependencies": {
-    "dustjs-linkedin": "~1.2.5",
+    "dustjs-linkedin": "~2.0.0",
     "express-dustjs": "~0.0.10"
   }
 }
