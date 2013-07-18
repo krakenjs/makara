@@ -115,9 +115,50 @@ describe('metadata', function () {
     });
 
 
-    it.skip('should recognize map types', function () {
+    describe('map', function () {
+
+        var scenarios = [
+            {
+                it: 'should recognize list type',
+                input: 'Hello, {@pre type="content" key="state" /}!',
+                expected: 'Hello, <edit data-key=\"state[CA]\" data-bundle=\"/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties\" data-original=\"California\">California</edit><edit data-key=\"state[MI]\" data-bundle=\"/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties\" data-original=\"Michigan\">Michigan</edit><edit data-key=\"state[OR]\" data-bundle=\"/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties\" data-original=\"Oregon\">Oregon</edit>!'
+            },
+            {
+                it: 'should support the "sep" attribute',
+                input: 'Hello: {@pre type="content" key="state" sep=", " /}!',
+                expected: 'Hello: <edit data-key="state[CA]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit>, <edit data-key="state[MI]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit>, <edit data-key="state[OR]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit>!'
+            },
+            {
+                it: 'should allow newlines',
+                input: 'Hello:\r\n{@pre type="content" key="state" sep="\r\n" /}!',
+                expected: 'Hello:\r\n<edit data-key="state[CA]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit>\r\n<edit data-key="state[MI]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit>\r\n<edit data-key="state[OR]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit>!'
+            },
+            {
+                it: 'should support the "before" attribute',
+                input: 'Hello: {@pre type="content" key="state" before="->" /}!',
+                expected: 'Hello: -><edit data-key="state[CA]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit>-><edit data-key="state[MI]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit>-><edit data-key="state[OR]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit>!'
+            },
+            {
+                it: 'should support the "after" attribute',
+                input: 'Hello: {@pre type="content" key="state" after="->" /}!',
+                expected: 'Hello: <edit data-key="state[CA]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit>-><edit data-key="state[MI]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit>-><edit data-key="state[OR]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit>->!'
+            },
+            {
+                it: 'should support the "before" and "after" attributes',
+                input: '<ul>{@pre type=content key=state before="<li>" after="</li>" /}</ul>',
+                expected: '<ul><li><edit data-key="state[CA]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit></li><li><edit data-key="state[MI]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit></li><li><edit data-key="state[OR]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit></li></ul>'
+            },
+            {
+                it: 'should support the "before," "after," and "sep" attributes',
+                input: '<ul>{@pre type=content key=state before="<li>" after="</li>" sep="\r\n" /}</ul>',
+                expected: '<ul><li><edit data-key="state[CA]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit></li>\r\n<li><edit data-key="state[MI]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit></li>\r\n<li><edit data-key="state[OR]" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit></li></ul>'
+            }
+        ];
+
+        buildScenarios(scenarios);
 
     });
+
 
 });
 

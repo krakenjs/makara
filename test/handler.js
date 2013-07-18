@@ -107,7 +107,7 @@ describe('handler', function () {
                 expected: '<ul><li>CA</li>\r\n<li>MI</li>\r\n<li>OR</li></ul>'
             },
             {
-                it: 'should replace $idx placeholders in values',
+                it: 'should replace $idx placeholders in content strings',
                 input: 'Hello: {@pre type="content" key="names" after="->" /}',
                 expected: 'Hello: 0. Larry->1. Moe->2. Curly->'
             },
@@ -123,8 +123,57 @@ describe('handler', function () {
     });
 
 
-    it.skip('should recognize map types', function () {
+    describe('map', function () {
 
+        var scenarios = [
+            {
+                it: 'should recognize map type',
+                input: 'Hello, {@pre type="content" key="state" /}!',
+                expected: 'Hello, CaliforniaMichiganOregon!'
+            },
+            {
+                it: 'should support the "sep" attribute',
+                input: 'Hello: {@pre type="content" key="state" sep=", " /}!',
+                expected: 'Hello: California, Michigan, Oregon!'
+            },
+            {
+                it: 'should allow newlines',
+                input: 'Hello:\r\n{@pre type="content" key="state" sep="\r\n" /}!',
+                expected: 'Hello:\r\nCalifornia\r\nMichigan\r\nOregon!'
+            },
+            {
+                it: 'should support the "before" attribute',
+                input: 'Hello: {@pre type="content" key="state" before="->" /}!',
+                expected: 'Hello: ->California->Michigan->Oregon!'
+            },
+            {
+                it: 'should support the "after" attribute',
+                input: 'Hello: {@pre type="content" key="state" after="->" /}!',
+                expected: 'Hello: California->Michigan->Oregon->!'
+            },
+            {
+                it: 'should support the "before" and "after" attributes',
+                input: '<ul>{@pre type=content key=state before="<li>" after="</li>" /}</ul>',
+                expected: '<ul><li>California</li><li>Michigan</li><li>Oregon</li></ul>'
+            },
+            {
+                it: 'should support the "before," "after," and "sep" attributes',
+                input: '<ul>{@pre type=content key=state before="<li>" after="</li>" sep="\r\n" /}</ul>',
+                expected: '<ul><li>California</li>\r\n<li>Michigan</li>\r\n<li>Oregon</li></ul>'
+            },
+            {
+                it: 'should replace $key placeholders in content strings',
+                input: 'Hello: {@pre type="content" key="stooge" sep=", " /}',
+                expected: 'Hello: Larry Fine, Moe Howard, Curly Howard, Shemp Howard'
+            },
+            {
+                it: 'should replace $key placeholders in before and after attributes, but not sep',
+                input: 'Hello: {@pre type="content" key="state" before="$key " after=" $key" sep=", $key " /}',
+                expected: 'Hello: CA California CA, $key MI Michigan MI, $key OR Oregon OR'
+            }
+        ];
+
+        buildScenarios(scenarios);
     });
 
 });
