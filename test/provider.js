@@ -111,7 +111,7 @@ describe('provider', function () {
         it('should add metadata to strings when setting is enabled', function () {
             var expected, content, bundle;
 
-            expected = '<edit data-key="test.value" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/test.properties" data-original="Foo">Foo</edit>';
+            expected = '<edit data-key="test.value" data-bundle="' + process.cwd() + '/test/fixtures/locales/US/en/test.properties" data-original="Foo">Foo</edit>';
             content = provider.create(contentRoot, fallbackLocale, false, true);
             bundle = content.getBundle('test', { country: 'US', language: 'en' });
             assert.isObject(bundle);
@@ -127,7 +127,7 @@ describe('provider', function () {
         it('should encode special characters when metadata is enabled', function () {
             var expected, content, bundle;
 
-            expected = '<edit data-key="test.special" data-bundle="/Users/ertoth/PayPal/src/git/dustjs-i18n/test/fixtures/locales/US/en/test.properties" data-original="Hello, &#123;name&#125;!">Hello, {name}!</edit>';
+            expected = '<edit data-key="test.special" data-bundle="' + process.cwd() + '/test/fixtures/locales/US/en/test.properties" data-original="Hello, &#123;name&#125;!">Hello, {name}!</edit>';
             content = provider.create(contentRoot, fallbackLocale, false, true);
             bundle = content.getBundle('test', { country: 'US', language: 'en' });
             assert.isObject(bundle);
