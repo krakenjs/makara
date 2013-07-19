@@ -256,10 +256,14 @@ var Permuter = {
 
                 Object.keys(content).forEach(function (cn) {
                     Object.keys(content[cn]).forEach(function (lang) {
+                        var langBundle = content[cn][lang].bundle || {},
+                            countryBundle = content[cn].bundle || {},
+                            fallbackBundle = content.bundle || {};
+
                         metadata.push({
                             src: file,
                             dest: path.join(cn, lang, relative),
-                            provider: content[cn][lang].bundle[name] || content[cn].bundle[name] || content.bundle[name]
+                            provider: langBundle[name] || countryBundle[name] || fallbackBundle[name]
                         });
                     });
                 });
