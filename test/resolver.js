@@ -47,11 +47,14 @@ describe('resolver', function () {
 
 
         it('should resolve an existing filename', function () {
-            var file;
+            var file,
+                fileName = 'test';
             res = resolver.create(config);
-            file = res.resolve('test');
+            file = res.resolve(fileName);
             assert(file.file, 'A known file was not found');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root), 'Root path doesn\'t match.');
         });
 
 
@@ -64,21 +67,26 @@ describe('resolver', function () {
 
 
         it('should resolve a nested file', function () {
-            var file;
+            var file,
+                fileName = 'inc/partial';
             res = resolver.create(config);
-            file = res.resolve('inc/partial');
+            file = res.resolve(fileName);
             assert(file.file, 'A known file was not found');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root), 'Root path doesn\'t match.');
         });
 
 
         it('should not fall back when resolving nested templates', function () {
             // In this case the template name includes a directory. We're not breaking that
             // apart to look up a file.
-            var file;
+            var file,
+                fileName = 'inc/test';
             res = resolver.create(config);
-            file = res.resolve('inc/test');
+            file = res.resolve(fileName);
             assert(!file.file);
+            assert(file.name === fileName, 'Inconsistent file name');
         });
 
     });
@@ -98,11 +106,14 @@ describe('resolver', function () {
 
 
         it('should resolve an existing filename', function () {
-            var file;
+            var file,
+                fileName = 'test';
             res = resolver.create(config);
-            file = res.resolve('test');
+            file = res.resolve(fileName);
             assert(file.file, 'A known file was not found');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root, 'US', 'en'), 'Root path doesn\'t match.');
         });
 
 
@@ -115,11 +126,14 @@ describe('resolver', function () {
 
 
         it('should fallback to the parent directory', function () {
-            var file;
+            var file,
+                fileName = 'country';
             res = resolver.create(config);
-            file = res.resolve('country');
+            file = res.resolve(fileName);
             assert(file.file, 'A known file was not found');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root, 'US'), 'Root path doesn\'t match.');
         });
 
 
@@ -151,17 +165,20 @@ describe('resolver', function () {
                     country: 'CN',
                     language: 'zh'
                 }
-            }
+            };
         });
 
 
         it('should resolve an existing filename', function () {
-            var file;
+            var file,
+                fileName = 'test';
             res = resolver.create(config);
-            file = res.resolve('test', context.locality);
+            file = res.resolve(fileName, context.locality);
             assert(file.file, 'A known file was not found');
             assert(file.file.indexOf('CN/zh/test') !== -1, 'Resolver located the wrong file.');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root, 'CN', 'zh'), 'Root path doesn\'t match.');
         });
 
 
@@ -174,12 +191,15 @@ describe('resolver', function () {
 
 
         it('should fallback to the parent directory', function () {
-            var file;
+            var file,
+                fileName = 'country';
             res = resolver.create(config);
-            file = res.resolve('country', context.locality);
+            file = res.resolve(fileName, context.locality);
             assert(file.file, 'A known file was not found');
             assert(file.file.indexOf('CN/country') !== -1, 'Resolver located the wrong file.');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root, 'CN'), 'Root path doesn\'t match.');
         });
 
 
@@ -193,12 +213,15 @@ describe('resolver', function () {
 
 
         it('should fall back to use the configured fallback', function () {
-            var file;
+            var file,
+                fileName = 'en-only';
             res = resolver.create(config);
-            file = res.resolve('en-only', context.locality);
+            file = res.resolve(fileName, context.locality);
             assert(file.file, 'A known file was not found');
             assert(file.file.indexOf('US/en/en-only') !== -1, 'Resolver located the wrong file.');
             assert(fs.existsSync(file.file), 'The resolved file does not exist on disk.');
+            assert(file.name === fileName, 'Inconsistent file name');
+            assert(path.resolve(file.root) === path.resolve(config.root, 'US', 'en'), 'Root path doesn\'t match.');
         });
 
 
