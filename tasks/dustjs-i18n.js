@@ -12,22 +12,45 @@ var Q = require('q'),
     handler = require('../lib/handler/default');
 
 
+function endsWith(str, frag) {
+    return str.lastIndexOf(frag) === (str.length - frag.length);
+}
+
 
 module.exports = function (grunt) {
 
 
     grunt.registerMultiTask('dustjs-i18n', 'An i18n preprocessor for Dust.js templates.', function () {
-        var done, options, bundles, bundleRoot;
+        var done, options, contentPath, bundles, bundleRoot;
 
         done = this.async();
         options = this.options({
             fallback: 'en_US',
-            contentPath: ['locales/**/*.properties'],
+            contentPath: ['locales'],
             tmpDir: 'tmp'
         });
 
-        bundles = grunt.file.expand(options.contentPath);
-        bundleRoot = fileutil.findCommonRoot(bundles, true);
+        contentPath = options.contentPath;
+        if (!Array.isArray(contentPath)) {
+            contentPath = [contentPath];
+        }
+
+        contentPath = contentPath.map(function (cp) {
+            if (!endsWith(cp, '/**/*.properties')) {
+                return cp.replace(/([\/]?)$/, '/**/*.properties');
+            }
+            return cp;
+        });
+
+
+        bundleRoot = contentPath.map(function (cp) {
+            return cp.replace('/**/*.properties', '');
+        });
+
+        // TODO: Currently only honors one locale directory.
+        bundleRoot = Array.isArray(bundleRoot) ? bundleRoot[0] : bundleRoot;
+        bundles = grunt.file.expand(contentPath);
+
 
         function processTemplate(metadata) {
             var deferred = Q.defer();
@@ -47,11 +70,12 @@ module.exports = function (grunt) {
 
 
         fileutil
-            .traverse(bundleRoot)
-            .then(qutil.recursify(loadBundles))
-            .then(restrucure)
+            .describe(bundles)
+            .then(qutil.applyEach(loadBundles))
+            .then(qutil.applyEach(removeRoot(bundleRoot)))
+            .then(restructure)
             .then(Permuter.promise(this.filesSrc))
-            .then(qutil.recursify(processTemplate))
+            .then(qutil.applyEach(processTemplate))
             .done(
                 function () {
                     done();
@@ -81,145 +105,61 @@ function loadBundles(fileInfo) {
 }
 
 
-/**
- * Recursified wrapper for content-traversing implementation.
- * @param bundle
- * @returns {{}}
- */
-function restrucure(bundle) {
+function removeRoot(root) {
+    return function (bundle) {
+        bundle.rel = path.relative(root, bundle.file);
+        return bundle;
+    }
+}
+
+// Turn an array of bundles into a content hierarchy.
+function restructure(bundles) {
     var data = {};
-    qutil.recursify(doRestructure)(bundle, data);
-    return data;
-}
 
+    bundles.forEach(function (bundle) {
+        var dir, dirs, name, c, d;
 
-/**
- * Traverses content hierarchy as read from filesystem to create a data structure
- * more useful when processing templates.
- * @param bundle
- * @param data
- * @returns {*}
- * @private
- */
-function doRestructure(bundle, data) {
-    var depth, file, dir, dirs, name;
-
-
-    data = data || {};
-
-    // Hidden arg added by recursify.
-    depth = arguments[2] || 0;
-
-    // File
-    file = bundle.file;
-    dir = path.dirname(file);
-    dirs = [];
-
-    name = path.basename(file);
-    name = name.replace(path.extname(file), '');
-
-    // Walk up the path, excluding original root (magic number 1)
-    while (depth > 1) {
-        // Prepend name with dirnames deeper that 3 levels:
-        // root (1, above) + country + lang directories. (magic number 3)
-        if (depth > 3) {
-            // Use forward slash instead of platform separators as actual
-            // bundle/template names exclusively use forward-slash.
-            name = path.basename(dir) + '/' + name;
-        }
-
-        // Only preserve the top two directories (country + lang),
-        // so pop superfluous values (magic number 1)
-        if (dirs.length > 1) {
-            dirs.pop();
-        }
-
-        // Add current dir
-        dirs.unshift(path.basename(dir));
-        dir = path.dirname(dir);
-        depth -= 1;
-    }
-
-    while (dirs.length) {
-        dir = dirs.shift();
-        data = data[dir] || (data[dir] = {});
-    }
-
-    if (!data.bundle) {
-        Object.defineProperty(data, 'bundle', {
-            enumerable: false,
-            value: {}
-        });
-    }
-
-
-    data.bundle[name] = bundle;
-    return data;
-}
-
-
-function buildContentTree(files, data, depth) {
-    var dir, dirs, name;
-
-    data = data || {};
-    depth = depth || 0;
-
-    if (Array.isArray(files)) {
-        // Directory
-        files.forEach(function (info) {
-            buildContentTree(info, data, depth + 1);
-        });
-
-    } else {
-        // File
-        dir = path.dirname(files.file);
+        // Remove the root dir from the full path
+        //rel = path.relative(root, bundle.file);
+        dir = path.dirname(bundle.rel);
         dirs = [];
 
-        name = path.basename(files.file);
-        name = name.replace(path.extname(files.file), '');
-
-        // Walk up the path, excluding original root (magic number 1)
-        while (depth > 1) {
-            // Prepend name with dirnames deeper that 3 levels:
-            // root (1, above) + country + lang directories. (magic number 3)
-            if (depth > 3) {
-                // Use forward slash instead of platform separators as actual
-                // bundle/template names exclusively use forward-slash.
-                name = path.basename(dir) + '/' + name;
-            }
-
-            // Only preserve the top two directories (country + lang),
-            // so pop superfluous values (magic number 1)
-            if (dirs.length > 1) {
-                dirs.pop();
-            }
-
-            // Add current dir
+        while (dir !== '.') {
             dirs.unshift(path.basename(dir));
             dir = path.dirname(dir);
-            depth -= 1;
         }
+
+        c = 0;
+        d = data;
+
+        name = path.basename(bundle.rel);
+        name = name.replace(path.extname(name), '');
 
         while (dirs.length) {
             dir = dirs.shift();
-            data = data[dir] || (data[dir] = {});
+            if (c < 2) {
+                // The first two dirs are country/lang
+                d = d[dir] || (d[dir] = {});
+            } else {
+                // remaining dirs are part of name
+                name = dir + '/' + name;
+            }
+            c++;
         }
 
-        if (!data.bundle) {
-            Object.defineProperty(data, 'bundle', {
+        if (!d.bundle) {
+            Object.defineProperty(d, 'bundle', {
                 enumerable: false,
                 value: {}
             });
         }
 
-        data.bundle[name] = files;
-    }
+        d.bundle[name] = bundle;
+    });
 
     return data;
+
 }
-
-
-
 
 
 /**

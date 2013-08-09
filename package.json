@@ -1,6 +1,6 @@
 {
   "name": "dustjs-i18n",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "express-dustjs": "~0.0.10"
   },
   "dependencies": {
-    "tagfinder": "~0.0.6",
+    "tagfinder": "~0.0.7",
     "ent": "0.0.5",
     "q": "~0.9.6",
     "tater": "0.0.1"
