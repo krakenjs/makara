@@ -87,6 +87,21 @@ describe('handler', function () {
                 expected: 'Hello:\r\nCA\r\nMI\r\nOR!'
             },
             {
+                it: 'should support the "mode" attribute',
+                input: '{@pre type="content" key="states" mode="json" /}',
+                expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
+                it: 'should support "mode" and ignore before/after when present',
+                input: '{@pre type="content" key="states" mode="json" before="->" after="->"/}',
+                expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and substitute $idx in content',
+                input: '{@pre type="content" key="names" mode="json" /}',
+                expected: '[{"$id":0,"$elt":"0. Larry"},{"$id":1,"$elt":"1. Moe"},{"$id":2,"$elt":"2. Curly"}]'
+            },
+            {
                 it: 'should support the "before" attribute',
                 input: 'Hello: {@pre type="content" key="states" before="->" /}!',
                 expected: 'Hello: ->CA->MI->OR!'
@@ -147,9 +162,19 @@ describe('handler', function () {
                 expected: 'Hello:\r\nCalifornia\r\nMichigan\r\nOregon!'
             },
             {
-                it: 'should support the "before" attribute',
-                input: 'Hello: {@pre type="content" key="state" before="->" /}!',
-                expected: 'Hello: ->California->Michigan->Oregon!'
+                it: 'should support the "mode" attribute',
+                input: '{@pre type="content" key="state" mode="json" /}',
+                expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and ignore before/after if present',
+                input: '{@pre type="content" key="state" mode="json" before="->" after="->" /}',
+                expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and substitute $idx in content',
+                input: '{@pre type="content" key="stooge" mode="json" /}',
+                expected: '[{\"$id\":\"Larry\",\"$elt\":\"Larry Fine\"},{\"$id\":\"Moe\",\"$elt\":\"Moe Howard\"},{\"$id\":\"Curly\",\"$elt\":\"Curly Howard\"},{\"$id\":\"Shemp\",\"$elt\":\"Shemp Howard\"}]'
             },
             {
                 it: 'should support the "after" attribute',
