@@ -97,6 +97,11 @@ describe('handler', function () {
                 expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
             },
             {
+                it: 'should support "mode" and ignore sep when present',
+                input: '{@pre type="content" key="states" mode="json" sep="+" /}',
+                expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
                 it: 'should support the "mode" attribute and substitute $idx in content',
                 input: '{@pre type="content" key="names" mode="json" /}',
                 expected: '[{"$id":0,"$elt":"0. Larry"},{"$id":1,"$elt":"1. Moe"},{"$id":2,"$elt":"2. Curly"}]'
@@ -169,6 +174,11 @@ describe('handler', function () {
             {
                 it: 'should support the "mode" attribute and ignore before/after if present',
                 input: '{@pre type="content" key="state" mode="json" before="->" after="->" /}',
+                expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and ignore sep if present',
+                input: '{@pre type="content" key="state" mode="json" sep="+" /}',
                 expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
             },
             {
