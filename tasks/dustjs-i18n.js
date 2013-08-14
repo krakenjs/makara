@@ -131,9 +131,7 @@ function restructure(bundles) {
 
         c = 0;
         d = data;
-
-        name = path.basename(bundle.rel);
-        name = name.replace(path.extname(name), '');
+        name = '';
 
         while (dirs.length) {
             dir = dirs.shift();
@@ -142,10 +140,13 @@ function restructure(bundles) {
                 d = d[dir] || (d[dir] = {});
             } else {
                 // remaining dirs are part of name
-                name = dir + '/' + name;
+                name = name + dir + '/';
             }
             c++;
         }
+
+        name = name + path.basename(bundle.rel);
+        name = name.replace(path.extname(name), '');
 
         if (!d.bundle) {
             Object.defineProperty(d, 'bundle', {
