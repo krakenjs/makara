@@ -41,7 +41,7 @@ module.exports = function (grunt) {
         },
         clean: {
             'tmp': 'tmp',
-            'build': '.build/templates'
+            'build': '.build'
         }
     });
 
@@ -51,7 +51,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-dustjs');
     grunt.loadTasks('./tasks/');
 
-    grunt.registerTask('i18n', ['clean', 'dustjs-i18n', 'dustjs', 'clean:tmp']);
+    grunt.registerTask('i18n', ['clean', 'dustjs-i18n', 'dustjs', 'clean']);
     grunt.registerTask('test', ['jshint', 'simplemocha', 'i18n']);
 
 };
