@@ -59,6 +59,46 @@ describe('handler', function () {
             expected: 'Hello, world!'
         },
         {
+            it: 'should replace a pre tag with localized content and support mode=json',
+            input: 'Hello, {@pre type="content" key="name" mode="json"/}!',
+            expected: 'Hello, \"world\"!'
+        },
+        {
+            it: 'should replace a pre tag with localized content and support before/after',
+            input: 'Hello, {@pre type="content" key="name" before="[" after="]" /}!',
+            expected: 'Hello, [world]!'
+        },
+        {
+            it: 'should handle escaping',
+            input: '{@pre type="content" key="textQuote"/}',
+            expected: '\"This has quotes\"'
+        },
+        {
+            it: 'should handle backslash escaping',
+            input: '{@pre type="content" key="backslashQuote"/}',
+            expected: 'I\\O'
+        },
+        {
+            it: 'should handle control escaping',
+            input: '{@pre type="content" key="controlQuote"/}',
+            expected: 'tab\ttab'
+        },
+        {
+            it: 'should handle escaping',
+            input: '{@pre type="content" key="textQuote" mode="json"/}',
+            expected: '\"\\"This has quotes\\"\"'
+        },
+        {
+            it: 'should handle backslash escaping',
+            input: '{@pre type="content" key="backslashQuote" mode="json"/}',
+            expected: '\"I\\\\O\"'
+        },
+        {
+            it: 'should handle control escaping',
+            input: '{@pre type="content" key="controlQuote" mode="json"/}',
+            expected: '\"tab\\ttab\"'
+        },
+        {
             it: 'should ignore unrecognized tags',
             input: 'Hello, {@pre type="link" /}!',
             expected: 'Hello, !'
@@ -90,6 +130,11 @@ describe('handler', function () {
                 it: 'should support the "mode" attribute',
                 input: '{@pre type="content" key="states" mode="json" /}',
                 expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and escape correctly',
+                input: '{@pre type="content" key="listQuote" mode="json" /}',
+                expected: '[{"$id":0,"$elt":"\\"This has quotes\\""},{"$id":1,"$elt":"I\\\\O"},{"$id":2,"$elt":"tab\\ttab"}]'
             },
             {
                 it: 'should support "mode" and ignore before/after when present',
