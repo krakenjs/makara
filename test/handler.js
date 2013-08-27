@@ -64,6 +64,11 @@ describe('handler', function () {
             expected: 'Hello, \"world\"!'
         },
         {
+            it: 'should replace a pre tag with localized content, support mode=json and ignore before/after',
+            input: 'Hello, {@pre type="content" key="name" mode="json" before="[" after="]" /}!',
+            expected: 'Hello, \"world\"!'
+        },
+        {
             it: 'should replace a pre tag with localized content and support before/after',
             input: 'Hello, {@pre type="content" key="name" before="[" after="]" /}!',
             expected: 'Hello, [world]!'
