@@ -59,6 +59,51 @@ describe('handler', function () {
             expected: 'Hello, world!'
         },
         {
+            it: 'should replace a pre tag with localized content and support mode=json',
+            input: 'Hello, {@pre type="content" key="name" mode="json"/}!',
+            expected: 'Hello, \"world\"!'
+        },
+        {
+            it: 'should replace a pre tag with localized content, support mode=json and ignore before/after',
+            input: 'Hello, {@pre type="content" key="name" mode="json" before="[" after="]" /}!',
+            expected: 'Hello, \"world\"!'
+        },
+        {
+            it: 'should replace a pre tag with localized content and support before/after',
+            input: 'Hello, {@pre type="content" key="name" before="[" after="]" /}!',
+            expected: 'Hello, [world]!'
+        },
+        {
+            it: 'should handle escaping',
+            input: '{@pre type="content" key="textQuote"/}',
+            expected: '\"This has quotes\"'
+        },
+        {
+            it: 'should handle backslash escaping',
+            input: '{@pre type="content" key="backslashQuote"/}',
+            expected: 'I\\O'
+        },
+        {
+            it: 'should handle control escaping',
+            input: '{@pre type="content" key="controlQuote"/}',
+            expected: 'tab\ttab'
+        },
+        {
+            it: 'should handle escaping',
+            input: '{@pre type="content" key="textQuote" mode="json"/}',
+            expected: '\"\\"This has quotes\\"\"'
+        },
+        {
+            it: 'should handle backslash escaping',
+            input: '{@pre type="content" key="backslashQuote" mode="json"/}',
+            expected: '\"I\\\\O\"'
+        },
+        {
+            it: 'should handle control escaping',
+            input: '{@pre type="content" key="controlQuote" mode="json"/}',
+            expected: '\"tab\\ttab\"'
+        },
+        {
             it: 'should ignore unrecognized tags',
             input: 'Hello, {@pre type="link" /}!',
             expected: 'Hello, !'
@@ -85,6 +130,31 @@ describe('handler', function () {
                 it: 'should allow newlines',
                 input: 'Hello:\r\n{@pre type="content" key="states" sep="\r\n" /}!',
                 expected: 'Hello:\r\nCA\r\nMI\r\nOR!'
+            },
+            {
+                it: 'should support the "mode" attribute',
+                input: '{@pre type="content" key="states" mode="json" /}',
+                expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and escape correctly',
+                input: '{@pre type="content" key="listQuote" mode="json" /}',
+                expected: '[{"$id":0,"$elt":"\\"This has quotes\\""},{"$id":1,"$elt":"I\\\\O"},{"$id":2,"$elt":"tab\\ttab"}]'
+            },
+            {
+                it: 'should support "mode" and ignore before/after when present',
+                input: '{@pre type="content" key="states" mode="json" before="->" after="->"/}',
+                expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
+                it: 'should support "mode" and ignore sep when present',
+                input: '{@pre type="content" key="states" mode="json" sep="+" /}',
+                expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and substitute $idx in content',
+                input: '{@pre type="content" key="names" mode="json" /}',
+                expected: '[{"$id":0,"$elt":"0. Larry"},{"$id":1,"$elt":"1. Moe"},{"$id":2,"$elt":"2. Curly"}]'
             },
             {
                 it: 'should support the "before" attribute',
@@ -147,9 +217,24 @@ describe('handler', function () {
                 expected: 'Hello:\r\nCalifornia\r\nMichigan\r\nOregon!'
             },
             {
-                it: 'should support the "before" attribute',
-                input: 'Hello: {@pre type="content" key="state" before="->" /}!',
-                expected: 'Hello: ->California->Michigan->Oregon!'
+                it: 'should support the "mode" attribute',
+                input: '{@pre type="content" key="state" mode="json" /}',
+                expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and ignore before/after if present',
+                input: '{@pre type="content" key="state" mode="json" before="->" after="->" /}',
+                expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and ignore sep if present',
+                input: '{@pre type="content" key="state" mode="json" sep="+" /}',
+                expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
+            },
+            {
+                it: 'should support the "mode" attribute and substitute $idx in content',
+                input: '{@pre type="content" key="stooge" mode="json" /}',
+                expected: '[{\"$id\":\"Larry\",\"$elt\":\"Larry Fine\"},{\"$id\":\"Moe\",\"$elt\":\"Moe Howard\"},{\"$id\":\"Curly\",\"$elt\":\"Curly Howard\"},{\"$id\":\"Shemp\",\"$elt\":\"Shemp Howard\"}]'
             },
             {
                 it: 'should support the "after" attribute',
