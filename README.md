@@ -1,6 +1,6 @@
 #### dustjs-i18n
 
-Load content bundles from a specific location. Optionally, decorate an express app to consumer pre-locaized templates,
+Load content bundles from a specific location. Optionally, decorate an express app to consume pre-locaized templates,
 or localize templates on-the-fly.
 
 
@@ -51,8 +51,8 @@ Optional
 #### Content
 
 Content intended for localization is stored in .properties files as simple key=value pairs. 
-These are the files that hold the contnet strings for the different languages your application supports.
-Normally you are likely to start with a master set of content (likely in English) and the L10N
+These are the files that hold the content strings for the different languages your application supports.
+Normally, you are likely to start with a master set of content (likely in English) and the L10N
 process will populate corresponding files for the other languages you will need.
 
 ##### Placement of .properties files
@@ -62,15 +62,17 @@ project. Under it will be a folder per country (e.g., US/, DE/,...). Below each 
 folder is one or more language folders (e.g. en/). So locales/US/en/ will be the likely
 location for your master set of .properties files. 
 
-.properties files are correlated with the dust templates that use them, by name.
-So if I have a top level index.dust file, there will be a file at locales/US/en/index.properties
-holding the external content strings used by that template. If your template is at
-widgets/display.dust then the content will be at locales/US/en/widgets/display.properties. 
+.properties files are correlated with the dust templates that use them, by path and name.
+So if I have a top level index.dust file, its content .properties filew will be at locales/US/en/index.properties
+This holds all the external content strings used by that template. If your template is at
+widgets/display.dust then the content will be at locales/US/en/widgets/display.properties. If you have
+content you want to share across pages, then you should factor out use of that content into a
+separate partial and use that partial to achieve content sharing.
 
 ##### What's in a .properties file
 
 The format is simple: key=value with one message per line coded in UTF-8.
-Comments are prefix with # and may be used for metadata annotations.
+Comments are prefixed with # and may be used for metadata annotations.
 
 Let's look at some samples and then use them to discuss various points.
 
@@ -92,15 +94,19 @@ index.states[AZ]=Arizona
 index.states[CA]=California
 ````
 
-We are using the name of the file to start our key on each line. This provides a 
-form of namespacing. Simple message strings just have the text of the message.
+We are using the name of the file to start our key on each line. This is strictly
+a convention that makes the path to the file clear. 
+The above could have omitted the leading "index." and the results would be the same.
+Text to the right of the = sign is a simple message string with the text of the message.
 If you have runtime values to be inserted, use braces to select the value
-from the dust template context as in the index.greeting line.
+from the dust template context as in the index.greeting line. This works because
+the content strings are inlined into your template during the build process so references
+like {userName} are simply handled by dust.`
 
-In addition to simple strings, we support lists (e.g, indexable list of message) and
+In addition to simple strings, we support lists (e.g, indexable list of messages) and
 maps (content indexable collection of messages). So the index.ccList above might
 be used to provide a list of values to go in a list of allowed credit cards.
-The index.states might be used to populate a dropdown list of states with they
+The index.states might be used to populate a dropdown list of states with the
 key as the option tag value and the full state name as the visible text.
 
 
@@ -151,18 +157,18 @@ An example, showing passing a list of months using @pre is:
 The mode="json" attribute tells @pre to inline the data but in the form of a JSON
 object, which in this case might look like:
 
-["Jan", "Feb",...,"Dec"]
+[{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 
 @provide then defines a parameter named "months" (name comes from the {:months} block
-holding the @pre tag. Then you are free to iterate over the months array values and
+holding the json value from the @pre tag. Then you are free to iterate over the months array values and
 mark the selected element accordingly, something you cannot do with just before/after.
 
-Note that the generated JSON for properties element that is a list is:
+The generated JSON for properties element that is a list uses array subscript values for the $id part:
 ````
 [{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 ````
 
 and for a map the $id value becomes the key of the map element. This provides compatibility
-with the expectation of existing core components and ensures the names don't conflict with
+with the existing core components and ensures the names don't conflict with
 data in your context.
 
