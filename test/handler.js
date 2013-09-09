@@ -185,11 +185,6 @@ describe('handler', function () {
                 it: 'should replace $idx placeholders in before and after attributes, but not sep',
                 input: 'Hello: {@pre type="content" key="names" before="$idx" after="$idx" sep="$idx" /}',
                 expected: 'Hello: 00. Larry0$idx11. Moe1$idx22. Curly2'
-            },
-            {
-                it: 'should support option list with attributes',
-                input: '<select>{@pre type=content key=months before="<option value=$key>" after="</option>" /}</select>',
-                expected: '<select><option value=1>1</option><option value=2>2</option><option value=3>3</option></select>'
             }
         ];
 
@@ -260,6 +255,11 @@ describe('handler', function () {
                 it: 'should replace $key placeholders in before and after attributes, but not sep',
                 input: 'Hello: {@pre type="content" key="state" before="$key " after=" $key" sep=", $key " /}',
                 expected: 'Hello: CA California CA, $key MI Michigan MI, $key OR Oregon OR'
+            },
+            {
+                it: 'should support option list with attributes',
+                input: '<select>{@pre type=content key=months before="<option value=$key>" after="</option>" /}</select>',
+                expected: '<select><option value=1>1</option><option value=2>2</option><option value=3>3</option></select>'
             }
         ];
 
