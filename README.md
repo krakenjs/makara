@@ -118,23 +118,23 @@ with the messages for that locale.
 
 A sample usage of @pre might be:
 
-<h1>{@pre type="content" key="index.title"/}</h1>
+{@pre type="content" key="index.title"/}
 
-Lists and maps are bit more problematic when it comes to inlining.
+Lists and maps are bit trickier when it comes to inlining.
 There are two approaches available. The first uses three additional
 attributes on the @pre tag, before="xxx" and after="yyy" and  sep="z".
-When emitting the list elements, each will be prefixed by the before
-string, if there is one, suffixed by the after string, if there is one,
-and separated by the sep string, if there is one. With sep, the last
-element is not followed by it.
+When emitting the list elements, each will be prefixed by the "before"
+string, if there is one, suffixed by the "after" string, if there is one,
+and separated by the "sep" string, if there is one. With sep, the last
+element is not followed by the separator.
 
-However, in some cases inlining won't do, even with before/after/sep.
-For example, if you need to pass the list as a parameter to partial.
+In some cases inlining won't do, even with before/after/sep.
+For example, if you need to pass the list as a parameter to a partial.
 
 For this, you use the @provide helper from the dusthelpers-supplement
-module (https://github.paypal.com/CoreUIE/dusthelpers-supplement). 
-Details are in the README there. An example, showing passing a list
-of months using @pre is:
+module plus @pre with a mode="json" attribute. 
+Details on @provide are in the README at https://github.paypal.com/CoreUIE/dusthelpers-supplement. 
+An example, showing passing a list of months using @pre is:
 
 ````
 {@provide selected=chosen}
