@@ -22,6 +22,7 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('dustjs-i18n', 'An i18n preprocessor for Dust.js templates.', function () {
         var done, options, contentPath, bundles, bundleRoot;
+        var pathName = path.sep + '**' + path.sep + '*.properties';
 
         done = this.async();
         options = this.options({
@@ -36,15 +37,16 @@ module.exports = function (grunt) {
         }
 
         contentPath = contentPath.map(function (cp) {
-            if (!endsWith(cp, '/**/*.properties')) {
-                return cp.replace(/([\/]?)$/, '/**/*.properties');
+            var regexp = new RegExp('([' + path.sep + ']?)$');
+            if (!endsWith(cp, pathName)) {
+                return cp.replace(regexp, pathName);
             }
             return cp;
         });
 
 
         bundleRoot = contentPath.map(function (cp) {
-            return cp.replace('/**/*.properties', '');
+            return cp.replace(pathName, '');
         });
 
         // TODO: Currently only honors one locale directory.
