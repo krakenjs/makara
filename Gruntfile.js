@@ -2,7 +2,6 @@
 
 module.exports = function (grunt) {
 
-
     grunt.initConfig({
         jshint: {
             files: ['Gruntfile.js', 'lib/**/*.js', 'test/fixtures/*.js'],
