@@ -20,7 +20,7 @@ module.exports = function (grunt) {
             all: { src: 'test/*.js' }
         },
         'dustjs-i18n': {
-            files: ['test/fixtures/public/templates/**/test.dust', 'test/fixtures/public/templates/inc/*.dust'],
+            files: ['test/fixtures/public/templates/**/*.dust'],
             options: {
                 contentPath: ['test/fixtures/locales/**/*.properties']
             }
