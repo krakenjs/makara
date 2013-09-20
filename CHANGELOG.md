@@ -1,3 +1,18 @@
+##### v0.2.0 - 19092013
+
+**Features**
+- Redefine old mode=json to mode=paired and add new mode=json that generates true JSON rather than v4-style objects
+
+##### v0.1.2 - 19092013
+
+**Bugs**
+- Fix issue #18 where missing key attribute crashes process.
+- First crack at fixing issue #9 wherein grunt tasks does not use fallback when bundle not found.
+
+**Features**
+- Simplify caching.
+
+
 ##### v0.1.1
 
 **Bugs**

@@ -64,6 +64,11 @@ describe('handler', function () {
             expected: '4tabs\t\t\t\ttab'
         },
         {
+            it: 'should gracefully handle missing \'key\' attribute.',
+            input: 'Hello, {@pre type="content" /}!',
+            expected: 'Hello, ☃undefined☃!'
+        },
+        {
             it: 'should replace a pre tag with localized content and support mode=json',
             input: 'Hello, {@pre type="content" key="name" mode="json"/}!',
             expected: 'Hello, \"world\"!'

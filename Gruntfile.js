@@ -2,7 +2,6 @@
 
 module.exports = function (grunt) {
 
-
     grunt.initConfig({
         jshint: {
             files: ['Gruntfile.js', 'lib/**/*.js', 'test/fixtures/*.js'],
@@ -21,7 +20,13 @@ module.exports = function (grunt) {
             all: { src: 'test/*.js' }
         },
         'dustjs-i18n': {
-            files: ['test/fixtures/public/templates/**/test.dust', 'test/fixtures/public/templates/inc/*.dust'],
+            files: [
+                'test/fixtures/public/templates/inc/**/*.dust',
+                'test/fixtures/public/templates/badkey.dust',
+                'test/fixtures/public/templates/largo.dust',
+                'test/fixtures/public/templates/nobundle.dust',
+                'test/fixtures/public/templates/test.dust'
+            ],
             options: {
                 contentPath: ['test/fixtures/locales/**/*.properties']
             }

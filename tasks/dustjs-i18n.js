@@ -4,6 +4,7 @@
 var Q = require('q'),
     fs = require('fs'),
     path = require('path'),
+    domain = require('domain'),
     tagfinder = require('tagfinder'),
     util = require('../lib/util'),
     qutil = require('../lib/qutil'),
@@ -55,16 +56,25 @@ module.exports = function (grunt) {
 
 
         function processTemplate(metadata) {
-            var deferred = Q.defer();
+            var deferred, domane;
 
-            tagfinder.parse(metadata.src, handler.create(metadata.provider), function (err, result) {
-                if (err) {
-                    deferred.reject(err);
-                    return;
-                }
+            deferred = Q.defer();
+            domane = domain.create();
+            domane.on('error', function (err) {
+                err.message += ' (Source: ' + metadata.src + ')';
+                deferred.reject(err);
+            });
 
-                grunt.file.write(path.join(options.tmpDir, metadata.dest), result);
-                deferred.resolve(metadata);
+            domane.run(function () {
+                tagfinder.parse(metadata.src, handler.create(metadata.provider), function (err, result) {
+                    if (err) {
+                        deferred.reject(err);
+                        return;
+                    }
+
+                    grunt.file.write(path.join(options.tmpDir, metadata.dest), result);
+                    deferred.resolve(metadata);
+                });
             });
 
             return deferred.promise;
@@ -76,14 +86,14 @@ module.exports = function (grunt) {
             .then(qutil.applyEach(loadBundles))
             .then(qutil.applyEach(removeRoot(bundleRoot)))
             .then(restructure)
-            .then(Permuter.promise(this.filesSrc))
+            .then(Permuter.promise(this.filesSrc, util.parseLangTag(options.fallback)))
             .then(qutil.applyEach(processTemplate))
             .done(
                 function () {
                     done();
                 },
                 function (err) {
-                    console.dir(err.stack);
+                    console.log(err.stack);
                     done(!err);
                 }
             );
@@ -182,13 +192,14 @@ var Permuter = {
     _proto: {
 
         permute: function (content) {
-            var metadata, root;
+            var metadata, root, fallback;
 
             metadata = [];
             root = this.root;
+            fallback = this.fallback;
 
             this.files.forEach(function (file) {
-                var relative, name;
+                var relative, name, fallbackCn, fallbackLang;
 
                 relative = file.replace(root, '');
                 if (relative[0] === path.sep) {
@@ -196,17 +207,22 @@ var Permuter = {
                 }
 
                 name = relative.replace(path.extname(relative), '');
+                fallbackCn = fallback.country;
+                fallbackLang = fallback.language;
 
                 Object.keys(content).forEach(function (cn) {
                     Object.keys(content[cn]).forEach(function (lang) {
                         var langBundle = content[cn][lang].bundle || {},
                             countryBundle = content[cn].bundle || {},
+                            rootBundle = content.bundle || {},
+                            fallbackLangBundle = content[fallbackCn][fallbackLang].bundle || {},
+                            fallbackCountryBundle = content[fallbackCn].bundle || {},
                             fallbackBundle = content.bundle || {};
 
                         metadata.push({
                             src: file,
                             dest: path.join(cn, lang, relative),
-                            provider: langBundle[name] || countryBundle[name] || fallbackBundle[name]
+                            provider: langBundle[name] || countryBundle[name] || rootBundle[name] || fallbackLangBundle[name] || fallbackCountryBundle[name] || fallbackBundle[name]
                         });
                     });
                 });
@@ -214,6 +230,7 @@ var Permuter = {
 
             return metadata;
         }
+
     },
 
     /**
@@ -221,10 +238,13 @@ var Permuter = {
      * @param files the files for which to create country/lang permutations
      * @returns {*} a `permuter` instance
      */
-    create: function (files) {
+    create: function (files, fallback) {
         return Object.create(Permuter._proto, {
             files: {
                 value: files
+            },
+            fallback: {
+                value: fallback
             },
             root: {
                 value: fileutil.findCommonRoot(files)
@@ -238,8 +258,8 @@ var Permuter = {
      * @param files the files for which to create country/lang permutations
      * @returns {Function} a permuter promise
      */
-    promise: function (files) {
-        var permuter = this.create(files);
+    promise: function (files, fallback) {
+        var permuter = this.create(files, fallback);
 
         return function (content) {
             var deferred = Q.defer();
