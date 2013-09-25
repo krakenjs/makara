@@ -1,6 +1,6 @@
 {
   "name": "dustjs-i18n",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,8 @@
     "tagfinder": "~0.0.7",
     "ent": "0.0.5",
     "q": "~0.9.6",
-    "tater": "0.0.1"
+    "tater": "~0.0.2",
+    "objutil": "~0.3.1"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
