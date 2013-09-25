@@ -59,6 +59,11 @@ describe('handler', function () {
             expected: 'Hello, world!'
         },
         {
+            it: 'should replace a pre tag with localized content preserving tabs',
+            input: '{@pre type="content" key="tabs4" /}',
+            expected: '4tabs\t\t\t\ttab'
+        },
+        {
             it: 'should gracefully handle missing \'key\' attribute.',
             input: 'Hello, {@pre type="content" /}!',
             expected: 'Hello, ☃undefined☃!'
@@ -69,7 +74,12 @@ describe('handler', function () {
             expected: 'Hello, \"world\"!'
         },
         {
-            it: 'should replace a pre tag with localized content, support mode=json and ignore before/after',
+            it: 'should replace a pre tag with localized content and support mode=paired',
+            input: 'Hello, {@pre type="content" key="name" mode="paired"/}!',
+            expected: 'Hello, world!'
+        },
+        {
+            it: 'should replace a pre tag with localized content, support mode=paired and ignore before/after',
             input: 'Hello, {@pre type="content" key="name" mode="json" before="[" after="]" /}!',
             expected: 'Hello, \"world\"!'
         },
@@ -137,28 +147,53 @@ describe('handler', function () {
                 expected: 'Hello:\r\nCA\r\nMI\r\nOR!'
             },
             {
-                it: 'should support the "mode" attribute',
+                it: 'should support the "mode=json" attribute',
                 input: '{@pre type="content" key="states" mode="json" /}',
+                expected: '["CA","MI","OR"]'
+            },
+            {
+                it: 'should support the "mode=paired" attribute',
+                input: '{@pre type="content" key="states" mode="paired" /}',
                 expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
             },
             {
-                it: 'should support the "mode" attribute and escape correctly',
+                it: 'should support the "mode=json" attribute and escape correctly',
                 input: '{@pre type="content" key="listQuote" mode="json" /}',
+                expected: '["\\"This has quotes\\"","I\\\\O","tab\\ttab"]'
+            },
+            {
+                it: 'should support the "mode=paired" attribute and escape correctly',
+                input: '{@pre type="content" key="listQuote" mode="paired" /}',
                 expected: '[{"$id":0,"$elt":"\\"This has quotes\\""},{"$id":1,"$elt":"I\\\\O"},{"$id":2,"$elt":"tab\\ttab"}]'
             },
             {
-                it: 'should support "mode" and ignore before/after when present',
+                it: 'should support "mode=json" and ignore before/after when present',
                 input: '{@pre type="content" key="states" mode="json" before="->" after="->"/}',
+                expected: '["CA","MI","OR"]'
+            },
+            {
+                it: 'should support "mode=paired" and ignore before/after when present',
+                input: '{@pre type="content" key="states" mode="paired" before="->" after="->"/}',
                 expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
             },
             {
-                it: 'should support "mode" and ignore sep when present',
+                it: 'should support "mode=json" and ignore sep when present',
                 input: '{@pre type="content" key="states" mode="json" sep="+" /}',
+                expected: '["CA","MI","OR"]'
+            },
+            {
+                it: 'should support "mode=paired" and ignore sep when present',
+                input: '{@pre type="content" key="states" mode="paired" sep="+" /}',
                 expected: '[{"$id":0,"$elt":"CA"},{"$id":1,"$elt":"MI"},{"$id":2,"$elt":"OR"}]'
             },
             {
-                it: 'should support the "mode" attribute and substitute $idx in content',
+                it: 'should support the "mode=json" attribute and substitute $idx in content',
                 input: '{@pre type="content" key="names" mode="json" /}',
+                expected: '["0. Larry","1. Moe","2. Curly"]'
+            },
+            {
+                it: 'should support the "mode=paired" attribute and substitute $idx in content',
+                input: '{@pre type="content" key="names" mode="paired" /}',
                 expected: '[{"$id":0,"$elt":"0. Larry"},{"$id":1,"$elt":"1. Moe"},{"$id":2,"$elt":"2. Curly"}]'
             },
             {
@@ -217,23 +252,48 @@ describe('handler', function () {
                 expected: 'Hello:\r\nCalifornia\r\nMichigan\r\nOregon!'
             },
             {
-                it: 'should support the "mode" attribute',
+                it: 'should support the "mode=json" attribute',
                 input: '{@pre type="content" key="state" mode="json" /}',
+                expected: '{\"CA\":\"California\",\"MI\":\"Michigan\",\"OR\":\"Oregon\"}'
+            },
+            {
+                it: 'should support the "mode=paired" attribute',
+                input: '{@pre type="content" key="state" mode="paired" /}',
                 expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
             },
             {
-                it: 'should support the "mode" attribute and ignore before/after if present',
+                it: 'should support the "mode=paired" with multi-level object',
+                input: '{@pre type="content" key="bankRules" mode="paired" /}',
+                expected: '[{\"$id\":\"BOFA\",\"$elt\":[{\"$id\":\"bankInfo\",\"$elt\":\"Payment\"},{\"$id\":\"transfer\",\"$elt\":\"Transfers\"}]},{\"$id\":\"HSBC\",\"$elt\":[{\"$id\":\"bankInfo\",\"$elt\":\"Foreign\"},{\"$id\":\"transfer\",\"$elt\":\"Others\"}]}]'
+            },
+            {
+                it: 'should support the "mode=json" attribute and ignore before/after if present',
                 input: '{@pre type="content" key="state" mode="json" before="->" after="->" /}',
+                expected: '{\"CA\":\"California\",\"MI\":\"Michigan\",\"OR\":\"Oregon\"}'
+            },
+            {
+                it: 'should support the "mode=paired" attribute and ignore before/after if present',
+                input: '{@pre type="content" key="state" mode="paired" before="->" after="->" /}',
                 expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
             },
             {
-                it: 'should support the "mode" attribute and ignore sep if present',
+                it: 'should support the "mode=json" attribute and ignore sep if present',
                 input: '{@pre type="content" key="state" mode="json" sep="+" /}',
+                expected: '{\"CA\":\"California\",\"MI\":\"Michigan\",\"OR\":\"Oregon\"}'
+            },
+            {
+                it: 'should support the "mode=paired" attribute and ignore sep if present',
+                input: '{@pre type="content" key="state" mode="paired" sep="+" /}',
                 expected: '[{\"$id\":\"CA\",\"$elt\":\"California\"},{\"$id\":\"MI\",\"$elt\":\"Michigan\"},{\"$id\":\"OR\",\"$elt\":\"Oregon\"}]'
             },
             {
-                it: 'should support the "mode" attribute and substitute $idx in content',
+                it: 'should support the "mode=json" attribute and substitute $key in content',
                 input: '{@pre type="content" key="stooge" mode="json" /}',
+                expected: '{\"Larry\":\"Larry Fine\",\"Moe\":\"Moe Howard\",\"Curly\":\"Curly Howard\",\"Shemp\":\"Shemp Howard\"}'
+            },
+            {
+                it: 'should support the "mode=paired" attribute and substitute $key in content',
+                input: '{@pre type="content" key="stooge" mode="paired" /}',
                 expected: '[{\"$id\":\"Larry\",\"$elt\":\"Larry Fine\"},{\"$id\":\"Moe\",\"$elt\":\"Moe Howard\"},{\"$id\":\"Curly\",\"$elt\":\"Curly Howard\"},{\"$id\":\"Shemp\",\"$elt\":\"Shemp Howard\"}]'
             },
             {
