@@ -6,7 +6,13 @@
   "scripts": {
     "test": "grunt test"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.paypal.com/webcore/dustjs-i18n.git"
+  },
+  "publishConfig": {
+    "registry": "http://npm.paypal.com"
+  },
   "keywords": [
     "dust.js",
     "i18n",
@@ -18,16 +24,16 @@
     "mocha": "~1.11.0",
     "chai": "~1.7.1",
     "grunt": "~0.4.1",
-    "express": "~3.3.1",
+    "express": "~3.4.x",
     "grunt-dustjs": "~0.2.2",
     "grunt-simple-mocha": "~0.4.0",
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.0.10"
+    "express-dustjs": "~0.1.0"
   },
   "dependencies": {
-    "tagfinder": "~0.0.7",
+    "tagfinder": "~0.0.8",
     "ent": "0.0.5",
     "q": "~0.9.6",
     "tater": "~0.0.2",
@@ -35,6 +41,6 @@
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.0.10"
+    "express-dustjs": "~0.1.0"
   }
 }
