@@ -1,7 +1,7 @@
 #### dustjs-i18n
 
 Load content bundles from a specific location. Optionally, decorate an express app to consume pre-locaized templates,
-or localize templates on-the-fly.
+or localize templates on-the-fly. A summary content property files and their use is also covered here.
 
 
 ##### Example
@@ -135,40 +135,79 @@ and separated by the "sep" string, if there is one. With sep, the last
 element is not followed by the separator.
 
 In some cases inlining won't do, even with before/after/sep.
-For example, if you need to pass the list as a parameter to a partial.
+For example, if you need to pass the list as a parameter to an exiting
+UVL core component like Dropdown. 
 
 For this, you use the @provide helper from the dusthelpers-supplement
-module plus @pre with a mode="json" attribute. 
+module plus @pre with a mode="paired" attribute. 
 Details on @provide are in the README at https://github.paypal.com/CoreUIE/dusthelpers-supplement. 
 An example, showing passing a list of months using @pre is:
-
+json
 ````
-{@provide selected=chosen}
-  <select name="months">
-    {#months}
-      <option value="{$id}"{@if cond="'{selected}' == '{$id selected="selected"{/if}>{$elt}option>
-    {/months}
-  </select>
-{:months}
-  {@pre type="content" key="index.months" mode="json" /}
+{@provide}
+	{>"dropdown"
+		fieldName="expirationMonth"
+		fieldLabel="{@pre type="content" key="creditOrDebitCard.monthLabel"/}"
+		id="expirationMonth_{fiId}"
+		className="expirationMonth pull-left medium"
+		lap="true"
+		optionList=monthList
+		optionSelected="{expirationMonth}"
+		required="required"
+	/}
+{:monthList}
+{@pre type="content" key="index.months" mode="paired" /}
 {/provide}
 ````
 
-The mode="json" attribute tells @pre to inline the data but in the form of a JSON
+The mode="paired" parameter produces the content list such that you can use both the 
+index of the element for the value in an option tag and the value for the displayable text.
+
+The mode="paired" attribute tells delivers the content in the  form of a JSON
 object, which in this case might look like:
 
 [{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 
-@provide then defines a parameter named "months" (name comes from the {:months} block
-holding the json value from the @pre tag. Then you are free to iterate over the months array values and
-mark the selected element accordingly, something you cannot do with just before/after.
+Core component libraries expect the $id, $elt convention so this is compatible.
+@provide will define a parameter named "monthList" (name comes from the {:monthList} block
+holding the @pre tag. Then you are free to pass the object as a parameter.
 
-The generated JSON for properties element that is a list uses array subscript values for the $id part:
-````
-[{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
-````
+In addition to mode="paired", there is an alternate form, mode="json". This generates the
+content list or map as a standard JavaScript array or object with properties. @provide
+then adds it to the context, allowing you free access to the content as a list or an object
+you can reference into. Note: in an early version of this module, mode="paired" was 
+called mode="json" but that changed with version 0.2.0. If you used mode="json" prior to
+0.2.0, a global edit to mode="paired" should be done.
 
-and for a map the $id value becomes the key of the map element. This provides compatibility
-with the existing core components and ensures the names don't conflict with
-data in your context.
+An interesting use case is when you need to dynamically choose an entry from a map and use
+fields belonging to the entry. For example, you have a set of content strings data for
+a number of different banks (e.g. HSBC, BofA, etc) and you want to dynamically get the
+messages appropriate to the customer's bank from the content.
+
+The following object is easily described using map format with a .properties file:
+"bankRules": {
+   "Banorte": {
+       "bankInfoText":"Payment concept",
+       "bankInfoRefText":"Reference number",
+       "transferText":"Transfers"
+   },
+   "HSBC": {
+       "bankInfoText":"Payment concept",
+       "bankInfoRefText":"numeric reference",
+       "transferText":"Transfers to other banks"
+   }
+}
+
+bankName: "HSBC",
+
+Now if the template contains the following you can display the bankInfoText message
+for HSBC (note bankName:HSBC in the data model). 
+
+````
+{@provide}
+BANK RULES: {#bankRules[bankName]}{.bankInfoText}{/bankRules[bankName]}
+{:bankRules}
+{@pre type="content" key="bankrules" mode="json" /}
+{/provide}
+````
 
