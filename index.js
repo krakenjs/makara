@@ -1,8 +1,7 @@
 'use strict';
 
 
-var objutil = require('objutil'),
-    dustjs = require('dustjs-linkedin'),
+var dustjs = require('dustjs-linkedin'),
     engine = require('express-dustjs'),
     cache = require('./lib/cache'),
     views = require('./lib/view'),
@@ -29,7 +28,7 @@ var proto = {
 
 
 exports.create = function (app, config) {
-    var contentProvider, templateTranslator, ext, clone, viewCache;
+    var contentProvider, templateTranslator, ext, current, settings, viewCache;
 
     if (!isExpress(app)) {
         config = app;
@@ -45,11 +44,11 @@ exports.create = function (app, config) {
 
         if (views.hasOwnProperty(ext)) {
             // For i18n we silently switch to the JS engine for all requests, passing config but disabling cache
-            // since we add our own caching layer below. (Clone it first so we don't muck with the original object.
-            clone = objutil.deepClone(config);
-            clone.cache = false;
+            // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
+            current = app.engines['.' + ext];
+            settings = (current && current.settings) || {};
 
-            app.engine(ext, engine.js(clone));
+            app.engine(ext, engine.js(settings));
             dustjs.onLoad = views[ext].create(app, templateTranslator);
 
             if (!!config.cache) {
