@@ -185,6 +185,7 @@ a number of different banks (e.g. HSBC, BofA, etc) and you want to dynamically g
 messages appropriate to the customer's bank from the content.
 
 The following object is easily described using map format with a .properties file:
+````
 "bankRules": {
    "Banorte": {
        "bankInfoText":"Payment concept",
@@ -199,6 +200,7 @@ The following object is easily described using map format with a .properties fil
 }
 
 bankName: "HSBC",
+````
 
 Now if the template contains the following you can display the bankInfoText message
 for HSBC (note bankName:HSBC in the data model). 
