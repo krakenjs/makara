@@ -47,6 +47,7 @@ exports.create = function (app, config) {
             // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
             current = app.engines['.' + ext];
             settings = (current && current.settings) || {};
+            settings.cache = false;
 
             app.engine(ext, engine.js(settings));
             dustjs.onLoad = views[ext].create(app, templateTranslator);
