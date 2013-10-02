@@ -1,6 +1,6 @@
 {
   "name": "dustjs-i18n",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.1.1"
+    "express-dustjs": "~0.1.2"
   },
   "dependencies": {
     "tagfinder": "~0.0.8",
@@ -40,6 +40,6 @@
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.1.1"
+    "express-dustjs": "~0.1.2"
   }
 }
