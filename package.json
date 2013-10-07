@@ -18,8 +18,12 @@
     "i18n",
     "templates"
   ],
-  "author": "Erik Toth <ertoth@paypal.com>",
-  "license": "BSD",
+  "licenses": [
+    {
+      "type": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
   "devDependencies": {
     "mocha": "~1.11.0",
     "chai": "~1.7.1",
