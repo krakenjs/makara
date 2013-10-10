@@ -18,6 +18,7 @@
     "i18n",
     "templates"
   ],
+  "author": "Erik Toth <ertoth@paypal.com>",
   "licenses": [
     {
       "type": "Apache 2.0",
