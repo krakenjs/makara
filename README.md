@@ -19,7 +19,7 @@ provider.getBundle('index', 'en_US', function (err, bundle) {
 ```javascript
 var express = require('express'),
     i18n = require('makara'),
-    dustjs = require('express-dustjs');
+    dustjs = require('adaro');
 
 
 var app = express();
