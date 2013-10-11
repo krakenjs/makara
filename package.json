@@ -37,7 +37,7 @@
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.1.2"
+    "adaro": "~0.1.2"
   },
   "dependencies": {
     "findatag": "~0.0.8",
@@ -47,6 +47,6 @@
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.1.2"
+    "adaro": "~0.1.2"
   }
 }
