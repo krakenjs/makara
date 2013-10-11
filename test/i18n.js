@@ -7,7 +7,7 @@ var fs = require('fs'),
     i18n = require('../index'),
     express = require('express'),
     assert = require('chai').assert,
-    dustjs = require('express-dustjs');
+    dustjs = require('adaro');
 
 
 describe('i18n', function () {
