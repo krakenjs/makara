@@ -1,4 +1,4 @@
-#### dustjs-i18n
+#### Makara
 
 Load content bundles from a specific location. Optionally, decorate an express app to consume pre-locaized templates,
 or localize templates on-the-fly. A summary content property files and their use is also covered here.
@@ -7,7 +7,7 @@ or localize templates on-the-fly. A summary content property files and their use
 ##### Example
 
 ```javascript
-var i18n = require('dustjs-i18n');
+var i18n = require('makara');
 
 var provider = i18n.create(config);
 provider.getBundle('index', 'en_US', function (err, bundle) {
@@ -18,7 +18,7 @@ provider.getBundle('index', 'en_US', function (err, bundle) {
 
 ```javascript
 var express = require('express'),
-    i18n = require('dustjs-i18n'),
+    i18n = require('makara'),
     dustjs = require('express-dustjs');
 
 
