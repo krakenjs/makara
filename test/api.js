@@ -5,7 +5,7 @@ var path = require('path'),
     i18n = require('../index'),
     express = require('express'),
     assert = require('chai').assert,
-    dust = require('express-dustjs'),
+    dust = require('adaro'),
     bundle = require('../lib/provider/bundle');
 
 describe('API', function () {

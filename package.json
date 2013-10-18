@@ -1,5 +1,5 @@
 {
-  "name": "dustjs-i18n",
+  "name": "makara",
   "version": "0.3.0",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
@@ -16,6 +16,8 @@
   "keywords": [
     "dust.js",
     "i18n",
+    "internationalization",
+    "localization",
     "templates"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
@@ -35,16 +37,16 @@
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.1.2"
+    "adaro": "~0.1.2"
   },
   "dependencies": {
-    "tagfinder": "~0.0.8",
+    "findatag": "~0.0.8",
     "ent": "0.0.5",
     "q": "~0.9.6",
-    "tater": "~0.0.2"
+    "spud": "~0.0.2"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
-    "express-dustjs": "~0.1.2"
+    "adaro": "~0.1.2"
   }
 }

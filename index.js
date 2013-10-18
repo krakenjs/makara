@@ -19,7 +19,7 @@
 
 
 var dustjs = require('dustjs-linkedin'),
-    engine = require('express-dustjs'),
+    engine = require('adaro'),
     cache = require('./lib/cache'),
     views = require('./lib/view'),
     provider = require('./lib/provider'),
