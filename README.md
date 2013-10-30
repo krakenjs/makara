@@ -132,7 +132,11 @@ attributes on the @pre tag, before="xxx" and after="yyy" and  sep="z".
 When emitting the list elements, each will be prefixed by the "before"
 string, if there is one, suffixed by the "after" string, if there is one,
 and separated by the "sep" string, if there is one. With sep, the last
-element is not followed by the separator.
+element is not followed by the separator. Note that the value {$idx} can be
+used in the before/after attribute strings and it will be replaced by
+the current iteration count when inlining the lists. Similarly, {$key}
+will be replaced with the current key when inlining a map. No replacement
+is done in the sep string.
 
 In some cases inlining won't do, even with before/after/sep.
 For example, if you need to pass the list as a parameter to an exiting
