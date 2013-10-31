@@ -61,6 +61,11 @@ describe('metadata', function () {
             expected: 'Hello, <edit data-key="name" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="world">world</edit>!'
         },
         {
+            it: 'should ignore a pre tag with edit attribute set to false',
+            input: 'Hello, {@pre type="content" edit="false" key="name" /}!',
+            expected: 'Hello, world!'
+        },
+        {
             it: 'should ignore unrecognized tags',
             input: 'Hello, {@pre type="link" /}!',
             expected: 'Hello, !'
@@ -107,6 +112,11 @@ describe('metadata', function () {
                 it: 'should support the "before," "after," and "sep" attributes',
                 input: '<ul>{@pre type=content key=states before="<li>" after="</li>" sep="\r\n" /}</ul>',
                 expected: '<ul><li><edit data-key="states[0]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="CA">CA</edit></li>\r\n<li><edit data-key="states[1]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="MI">MI</edit></li>\r\n<li><edit data-key="states[2]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="OR">OR</edit></li></ul>'
+            },
+            {
+                it: 'should support the edit attribute set to false',
+                input: 'Hello, {@pre type="content" edit="false" key="states" sep=" " /}!',
+                expected: 'Hello, CA MI OR!'
             }
         ];
 
@@ -152,7 +162,12 @@ describe('metadata', function () {
                 it: 'should support the "before," "after," and "sep" attributes',
                 input: '<ul>{@pre type=content key=state before="<li>" after="</li>" sep="\r\n" /}</ul>',
                 expected: '<ul><li><edit data-key="state[CA]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit></li>\r\n<li><edit data-key="state[MI]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit></li>\r\n<li><edit data-key="state[OR]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit></li></ul>'
-            }
+            },
+            {
+                it: 'should support the edit attribute set to false',
+                input: 'Hello, {@pre type="content" key="state" edit="false" sep=" " /}!',
+                expected: 'Hello, California Michigan Oregon!'
+            },
         ];
 
         buildScenarios(scenarios);
