@@ -1,5 +1,5 @@
 /*───────────────────────────────────────────────────────────────────────────*\
-│  Copyright (C) 2013 eBay, Inc.                                              │
+│  Copyright (C) 2013 eBay Software Foundation                                │
 │                                                                             │
 │   ,'""`.                                                                    │
 │  / _  _ \  Licensed under the Apache License, Version 2.0 (the "License");  │
@@ -19,7 +19,7 @@
 
 
 var dustjs = require('dustjs-linkedin'),
-    engine = require('express-dustjs'),
+    engine = require('adaro'),
     cache = require('./lib/cache'),
     views = require('./lib/view'),
     provider = require('./lib/provider'),

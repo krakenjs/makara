@@ -6,3 +6,4 @@ tmp
 logs
 test/fixtures/.build
 *.log
+*.iml

@@ -2,7 +2,7 @@
 'use strict';
 
 var path = require('path'),
-    finder = require('tagfinder'),
+    finder = require('findatag'),
     assert = require('chai').assert,
     handler = require('../lib/handler/default'),
     bundle = require('../lib/provider/bundle');

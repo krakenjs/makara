@@ -1,5 +1,5 @@
 /*───────────────────────────────────────────────────────────────────────────*\
-│  Copyright (C) 2013 eBay, Inc.                                              │
+│  Copyright (C) 2013 eBay Software Foundation                                │
 │                                                                             │
 │   ,'""`.                                                                    │
 │  / _  _ \  Licensed under the Apache License, Version 2.0 (the "License");  │
@@ -22,7 +22,7 @@ var Q = require('q'),
     fs = require('fs'),
     path = require('path'),
     domain = require('domain'),
-    tagfinder = require('tagfinder'),
+    tagfinder = require('findatag'),
     util = require('../lib/util'),
     qutil = require('../lib/qutil'),
     fileutil = require('../lib/fileutil'),
@@ -38,7 +38,7 @@ function endsWith(str, frag) {
 module.exports = function (grunt) {
 
 
-    grunt.registerMultiTask('dustjs-i18n', 'An i18n preprocessor for Dust.js templates.', function () {
+    grunt.registerMultiTask('makara', 'An i18n preprocessor for Dust.js templates.', function () {
         var done, options, contentPath, bundles, bundleRoot;
         var pathName = path.sep + '**' + path.sep + '*.properties';
 

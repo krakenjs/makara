@@ -19,7 +19,7 @@ module.exports = function (grunt) {
             },
             all: { src: 'test/*.js' }
         },
-        'dustjs-i18n': {
+        'makara': {
             files: [
                 'test/fixtures/public/templates/inc/**/*.dust',
                 'test/fixtures/public/templates/badkey.dust',
@@ -56,7 +56,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-dustjs');
     grunt.loadTasks('./tasks/');
 
-    grunt.registerTask('i18n', ['clean', 'dustjs-i18n', 'dustjs', 'clean']);
+    grunt.registerTask('i18n', ['clean', 'makara', 'dustjs', 'clean']);
     grunt.registerTask('test', ['jshint', 'simplemocha', 'i18n']);
 
 };
