@@ -61,7 +61,7 @@ describe('metadata', function () {
             expected: 'Hello, <edit data-key="name" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="world">world</edit>!'
         },
         {
-            it: 'should ignore a pre tag with edit attribute set to false',
+            it: 'should ignore a pre tag with editable attribute set to false',
             input: 'Hello, {@pre type="content" editable="false" key="name" /}!',
             expected: 'Hello, world!'
         },
@@ -114,7 +114,7 @@ describe('metadata', function () {
                 expected: '<ul><li><edit data-key="states[0]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="CA">CA</edit></li>\r\n<li><edit data-key="states[1]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="MI">MI</edit></li>\r\n<li><edit data-key="states[2]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="OR">OR</edit></li></ul>'
             },
             {
-                it: 'should support the edit attribute set to false',
+                it: 'should support the editable attribute set to false',
                 input: 'Hello, {@pre type="content" editable="false" key="states" sep=" " /}!',
                 expected: 'Hello, CA MI OR!'
             }
@@ -164,7 +164,7 @@ describe('metadata', function () {
                 expected: '<ul><li><edit data-key="state[CA]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="California">California</edit></li>\r\n<li><edit data-key="state[MI]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="Michigan">Michigan</edit></li>\r\n<li><edit data-key="state[OR]" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="Oregon">Oregon</edit></li></ul>'
             },
             {
-                it: 'should support the edit attribute set to false',
+                it: 'should support the editable attribute set to false',
                 input: 'Hello, {@pre type="content" key="state" editable="false" sep=" " /}!',
                 expected: 'Hello, California Michigan Oregon!'
             },
