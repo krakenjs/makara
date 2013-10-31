@@ -7,7 +7,7 @@
 ##### v0.2.0 - 20130919
 
 **Features**
-- Redefine old mode=json to mode=paired and add new mode=json that generates true JSON rather than v4-style objects
+- Redefine old mode=json to mode=paired and add new mode=json that generates true JSON objects
 
 ##### v0.1.2 - 20130919
 
