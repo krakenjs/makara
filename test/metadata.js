@@ -167,7 +167,7 @@ describe('metadata', function () {
                 it: 'should support the editable attribute set to false',
                 input: 'Hello, {@pre type="content" key="state" editable="false" sep=" " /}!',
                 expected: 'Hello, California Michigan Oregon!'
-            },
+            }
         ];
 
         buildScenarios(scenarios);
