@@ -62,7 +62,7 @@ describe('metadata', function () {
         },
         {
             it: 'should ignore a pre tag with edit attribute set to false',
-            input: 'Hello, {@pre type="content" edit="false" key="name" /}!',
+            input: 'Hello, {@pre type="content" editable="false" key="name" /}!',
             expected: 'Hello, world!'
         },
         {
@@ -115,7 +115,7 @@ describe('metadata', function () {
             },
             {
                 it: 'should support the edit attribute set to false',
-                input: 'Hello, {@pre type="content" edit="false" key="states" sep=" " /}!',
+                input: 'Hello, {@pre type="content" editable="false" key="states" sep=" " /}!',
                 expected: 'Hello, CA MI OR!'
             }
         ];
@@ -165,7 +165,7 @@ describe('metadata', function () {
             },
             {
                 it: 'should support the edit attribute set to false',
-                input: 'Hello, {@pre type="content" key="state" edit="false" sep=" " /}!',
+                input: 'Hello, {@pre type="content" key="state" editable="false" sep=" " /}!',
                 expected: 'Hello, California Michigan Oregon!'
             },
         ];
