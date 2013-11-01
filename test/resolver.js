@@ -1,7 +1,7 @@
 /*global describe:false, it:false, before:false, beforeEach:false, after:false, afterEach:false*/
 'use strict';
 
-var fs = require('fs'),
+var fs = require('graceful-fs'),
     path = require('path'),
     assert = require('chai').assert,
     resolver = require('../lib/resolver');

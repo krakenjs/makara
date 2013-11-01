@@ -19,7 +19,7 @@
 
 
 var Q = require('q'),
-    fs = require('fs'),
+    fs = require('graceful-fs'),
     path = require('path'),
     domain = require('domain'),
     tagfinder = require('findatag'),

@@ -1,7 +1,7 @@
 /*global describe:false, it:false, before:false, beforeEach:false, after:false, afterEach:false*/
 'use strict';
 
-var fs = require('fs'),
+var fs = require('graceful-fs'),
     http = require('http'),
     path = require('path'),
     i18n = require('../index'),
