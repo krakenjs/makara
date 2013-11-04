@@ -175,81 +175,22 @@ will be replaced with the current key when inlining a map. No replacement
 is done in the sep string.
 
 In some cases inlining won't do, even with before/after/sep.
-For example, if you need to pass the list as a parameter to an exiting
-UVL core component like Dropdown. 
+For example, if you need to pass the list as a parameter to a templating
+partial that might implement a Dropdown functionality.
 
-For this, you use the @provide helper from the dusthelpers-supplement
-module plus @pre with a mode="paired" attribute. 
-Details on @provide are in the README at https://github.paypal.com/CoreUIE/dusthelpers-supplement. 
-An example, showing passing a list of months using @pre is:
-json
-````
-{@provide}
-	{>"dropdown"
-		fieldName="expirationMonth"
-		fieldLabel="{@pre type="content" key="creditOrDebitCard.monthLabel"/}"
-		id="expirationMonth_{fiId}"
-		className="expirationMonth pull-left medium"
-		lap="true"
-		optionList=monthList
-		optionSelected="{expirationMonth}"
-		required="required"
-	/}
-{:monthList}
-{@pre type="content" key="index.months" mode="paired" /}
-{/provide}
-````
+For this, @pre with a mode="paired" attribute offers you more flexibility.
 
 The mode="paired" parameter produces the content list such that you can use both the 
 index of the element for the value in an option tag and the value for the displayable text.
 
-The mode="paired" attribute tells delivers the content in the  form of a JSON
-object, which in this case might look like:
+The mode="paired" attribute delivers the content in the  form of a JSON
+object, which in the case of a list of months might look like:
 
 [{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 
-Core component libraries expect the $id, $elt convention so this is compatible.
-@provide will define a parameter named "monthList" (name comes from the {:monthList} block
-holding the @pre tag. Then you are free to pass the object as a parameter.
+This gives you more ability to work with both they list/map value and the element value
+in your code.
 
 In addition to mode="paired", there is an alternate form, mode="json". This generates the
-content list or map as a standard JavaScript array or object with properties. @provide
-then adds it to the context, allowing you free access to the content as a list or an object
-you can reference into. Note: in an early version of this module, mode="paired" was 
-called mode="json" but that changed with version 0.2.0. If you used mode="json" prior to
-0.2.0, a global edit to mode="paired" should be done.
-
-An interesting use case is when you need to dynamically choose an entry from a map and use
-fields belonging to the entry. For example, you have a set of content strings data for
-a number of different banks (e.g. HSBC, BofA, etc) and you want to dynamically get the
-messages appropriate to the customer's bank from the content.
-
-The following object is easily described using map format with a .properties file:
-````
-"bankRules": {
-   "Banorte": {
-       "bankInfoText":"Payment concept",
-       "bankInfoRefText":"Reference number",
-       "transferText":"Transfers"
-   },
-   "HSBC": {
-       "bankInfoText":"Payment concept",
-       "bankInfoRefText":"numeric reference",
-       "transferText":"Transfers to other banks"
-   }
-}
-
-bankName: "HSBC",
-````
-
-Now if the template contains the following you can display the bankInfoText message
-for HSBC (note bankName:HSBC in the data model). 
-
-````
-{@provide}
-BANK RULES: {#bankRules[bankName]}{.bankInfoText}{/bankRules[bankName]}
-{:bankRules}
-{@pre type="content" key="bankrules" mode="json" /}
-{/provide}
-````
+content list or map as a standard JavaScript array or object with properties.
 
