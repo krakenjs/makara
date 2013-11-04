@@ -98,10 +98,12 @@ We are using the name of the file to start our key on each line. This is strictl
 a convention that makes the path to the file clear. 
 The above could have omitted the leading "index." and the results would be the same.
 Text to the right of the = sign is a simple message string with the text of the message.
-If you have runtime values to be inserted, use braces to select the value
+If you have runtime values to be inserted, use dust brace to select the value
 from the dust template context as in the index.greeting line. This works because
 the content strings are inlined into your template during the build process so references
-like {userName} are simply handled by dust.`
+like {userName} are just handled by dust. Note that there is no restriction on 
+inserting HTML tags into the messages. They are just another string of characters
+as far as the content processing is concerned.
 
 In addition to simple strings, we support lists (e.g, indexable list of messages) and
 maps (content indexable collection of messages). So the index.ccList above might
@@ -110,11 +112,11 @@ The index.states might be used to populate a dropdown list of states with the
 key as the option tag value and the full state name as the visible text.
 
 To support writing the key part in natural languages other than English, all UTF-8 characters
-are allowed with a few exceptions needed to make the chosen syntax key=value work. The
+are allowed with a few exceptions needed to make the key=value syntax work. The
 exceptions are:
-- No equal sign in key part (e.g. first equal sign start the value)
+- No equal sign in key part (e.g. first equal sign starts the value)
 - No periods in key part (used to allow keys like a.b.c)
-- No square brackets (used for subscript and key notation)
+- No square brackets (used for subscript and map key notation)
 - May not start with # (Used for comments)
 
 These same general restrictions apply to map key values.  If you need to
@@ -124,12 +126,29 @@ escaping mechanisms:
 - \u{dddddd} - Like JavaScript ES6 notation and handles all possible Unicode characters
 
 For example,
+
 \u2603=snowman
+
 would use the Unicode snowman character for the key name.
 
-There are some edge cases which we won't go into here but you can find the
-gory details at:
-https://confluence.paypal.com/cnfl/display/UIEArch/.properties+content+format
+There are some edge cases worth mentioning:
+
+Case 1:
+```
+key.subkey=foo
+key.subkey[bar]=baz
+```
+
+In this case, subkey is created originally as a string value but is then overriden as a map. The original
+foo value will be discarded.
+
+Case 2:
+```
+key.subkey[0]=1
+key.subkey[foo]=bar
+```
+
+In this case, key.subkey is created originally as a list but is then converted to a map wyhen the alphanumeric key is added.
 
 ##### How do I reference content in a dust template?
 
