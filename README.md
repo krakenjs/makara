@@ -188,9 +188,9 @@ object, which in the case of a list of months might look like:
 
 [{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 
-This gives you more ability to work with both they list/map value and the element value
-in your code.
+This gives you more ability to work with both the list/map value and the element value
+in your template.
 
 In addition to mode="paired", there is an alternate form, mode="json". This generates the
-content list or map as a standard JavaScript array or object with properties.
+content list or map as a standard JavaScript array or an object with properties, respectively.
 
