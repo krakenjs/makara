@@ -1,7 +1,7 @@
 #### Makara
 
 Load content bundles from a specific location. Optionally, decorate an express app to consume pre-locaized templates,
-or localize templates on-the-fly. A summary content property files and their use is also covered here.
+or localize templates on-the-fly. A summary of content property files and their use is also covered here.
 
 
 ##### Example
@@ -63,7 +63,7 @@ folder is one or more language folders (e.g. en/). So locales/US/en/ will be the
 location for your master set of .properties files. 
 
 .properties files are correlated with the dust templates that use them, by path and name.
-So if I have a top level index.dust file, its content .properties filew will be at locales/US/en/index.properties
+So if you have a top level index.dust file, its content .properties filew will be at locales/US/en/index.properties
 This holds all the external content strings used by that template. If your template is at
 widgets/display.dust then the content will be at locales/US/en/widgets/display.properties. If you have
 content you want to share across pages, then you should factor out use of that content into a
@@ -109,6 +109,23 @@ be used to provide a list of values to go in a list of allowed credit cards.
 The index.states might be used to populate a dropdown list of states with the
 key as the option tag value and the full state name as the visible text.
 
+To support writing the key part in natural languages other than English, all UTF-8 characters
+are allowed with a few exceptions needed to make the chosen syntax key=value work. The
+exceptions are:
+- No equal sign in key part (e.g. first equal sign start the value)
+- No periods in key part (used to allow keys like a.b.c)
+- No square brackets (used for subscript and key notation)
+- May not start with # (Used for comments)
+
+These same general restrictions apply to map key values.  If you need to
+use characters that are restricted, you can do so using either of these
+escaping mechanisms:
+- \udddd - Like JavaScript but only handles the same characters supported by this notation in JavaScript
+- \u{dddddd} - Like JavaScript ES6 notation and handles all possible Unicode characters
+
+For example,
+\u2603=snowman
+would use the Unicode snowman character for the key name.
 
 There are some edge cases which we won't go into here but you can find the
 gory details at:
