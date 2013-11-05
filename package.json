@@ -72,7 +72,7 @@
     "ent": "0.0.5",
     "q": "~0.9.6",
     "spud": "~0.0.2",
-    "graceful-fs": "2.0.1"
+    "graceful-fs": "~2.0.1"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
