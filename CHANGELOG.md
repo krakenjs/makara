@@ -1,3 +1,10 @@
+##### v0.3.1 - 20131105
+**Features**
+- Switch to use graceful-fs for managing larges numbers of files.
+- Add `editable` flag to manually override metadata rendering per tag.
+- Update dev deps
+- Documentation
+
 ##### v0.3.0 - 20131002
 
 **Features**
