@@ -1,7 +1,7 @@
 #### Makara
 
 Load content bundles from a specific location. Optionally, decorate an express app to consume pre-locaized templates,
-or localize templates on-the-fly. A summary content property files and their use is also covered here.
+or localize templates on-the-fly. A summary of content property files and their use is also covered here.
 
 
 ##### Example
@@ -63,7 +63,7 @@ folder is one or more language folders (e.g. en/). So locales/US/en/ will be the
 location for your master set of .properties files. 
 
 .properties files are correlated with the dust templates that use them, by path and name.
-So if I have a top level index.dust file, its content .properties filew will be at locales/US/en/index.properties
+So if you have a top level index.dust file, its content .properties filew will be at locales/US/en/index.properties
 This holds all the external content strings used by that template. If your template is at
 widgets/display.dust then the content will be at locales/US/en/widgets/display.properties. If you have
 content you want to share across pages, then you should factor out use of that content into a
@@ -98,10 +98,12 @@ We are using the name of the file to start our key on each line. This is strictl
 a convention that makes the path to the file clear. 
 The above could have omitted the leading "index." and the results would be the same.
 Text to the right of the = sign is a simple message string with the text of the message.
-If you have runtime values to be inserted, use braces to select the value
+If you have runtime values to be inserted, use dust brace to select the value
 from the dust template context as in the index.greeting line. This works because
 the content strings are inlined into your template during the build process so references
-like {userName} are simply handled by dust.`
+like {userName} are just handled by dust. Note that there is no restriction on 
+inserting HTML tags into the messages. They are just another string of characters
+as far as the content processing is concerned.
 
 In addition to simple strings, we support lists (e.g, indexable list of messages) and
 maps (content indexable collection of messages). So the index.ccList above might
@@ -109,10 +111,44 @@ be used to provide a list of values to go in a list of allowed credit cards.
 The index.states might be used to populate a dropdown list of states with the
 key as the option tag value and the full state name as the visible text.
 
+To support writing the key part in natural languages other than English, all UTF-8 characters
+are allowed with a few exceptions needed to make the key=value syntax work. The
+exceptions are:
+- No equal sign in key part (e.g. first equal sign starts the value)
+- No periods in key part (used to allow keys like a.b.c)
+- No square brackets (used for subscript and map key notation)
+- May not start with # (Used for comments)
 
-There are some edge cases which we won't go into here but you can find the
-gory details at:
-https://confluence.paypal.com/cnfl/display/UIEArch/.properties+content+format
+These same general restrictions apply to map key values.  If you need to
+use characters that are restricted, you can do so using either of these
+escaping mechanisms:
+- \udddd - Like JavaScript but only handles the same characters supported by this notation in JavaScript
+- \u{dddddd} - Like JavaScript ES6 notation and handles all possible Unicode characters
+
+For example,
+
+\u2603=snowman
+
+would use the Unicode snowman character for the key name.
+
+There are some edge cases worth mentioning:
+
+Case 1:
+```
+key.subkey=foo
+key.subkey[bar]=baz
+```
+
+In this case, subkey is created originally as a string value but is then overriden as a map. The original
+foo value will be discarded.
+
+Case 2:
+```
+key.subkey[0]=1
+key.subkey[foo]=bar
+```
+
+In this case, key.subkey is created originally as a list but is then converted to a map wyhen the alphanumeric key is added.
 
 ##### How do I reference content in a dust template?
 
@@ -139,81 +175,22 @@ will be replaced with the current key when inlining a map. No replacement
 is done in the sep string.
 
 In some cases inlining won't do, even with before/after/sep.
-For example, if you need to pass the list as a parameter to an exiting
-UVL core component like Dropdown. 
+For example, if you need to pass the list as a parameter to a templating
+partial that might implement a Dropdown functionality.
 
-For this, you use the @provide helper from the dusthelpers-supplement
-module plus @pre with a mode="paired" attribute. 
-Details on @provide are in the README at https://github.paypal.com/CoreUIE/dusthelpers-supplement. 
-An example, showing passing a list of months using @pre is:
-json
-````
-{@provide}
-	{>"dropdown"
-		fieldName="expirationMonth"
-		fieldLabel="{@pre type="content" key="creditOrDebitCard.monthLabel"/}"
-		id="expirationMonth_{fiId}"
-		className="expirationMonth pull-left medium"
-		lap="true"
-		optionList=monthList
-		optionSelected="{expirationMonth}"
-		required="required"
-	/}
-{:monthList}
-{@pre type="content" key="index.months" mode="paired" /}
-{/provide}
-````
+For this, @pre with a mode="paired" attribute offers you more flexibility.
 
 The mode="paired" parameter produces the content list such that you can use both the 
 index of the element for the value in an option tag and the value for the displayable text.
 
-The mode="paired" attribute tells delivers the content in the  form of a JSON
-object, which in this case might look like:
+The mode="paired" attribute delivers the content in the  form of a JSON
+object, which in the case of a list of months might look like:
 
 [{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 
-Core component libraries expect the $id, $elt convention so this is compatible.
-@provide will define a parameter named "monthList" (name comes from the {:monthList} block
-holding the @pre tag. Then you are free to pass the object as a parameter.
+This gives you more ability to work with both the list/map value and the element value
+in your template.
 
 In addition to mode="paired", there is an alternate form, mode="json". This generates the
-content list or map as a standard JavaScript array or object with properties. @provide
-then adds it to the context, allowing you free access to the content as a list or an object
-you can reference into. Note: in an early version of this module, mode="paired" was 
-called mode="json" but that changed with version 0.2.0. If you used mode="json" prior to
-0.2.0, a global edit to mode="paired" should be done.
-
-An interesting use case is when you need to dynamically choose an entry from a map and use
-fields belonging to the entry. For example, you have a set of content strings data for
-a number of different banks (e.g. HSBC, BofA, etc) and you want to dynamically get the
-messages appropriate to the customer's bank from the content.
-
-The following object is easily described using map format with a .properties file:
-````
-"bankRules": {
-   "Banorte": {
-       "bankInfoText":"Payment concept",
-       "bankInfoRefText":"Reference number",
-       "transferText":"Transfers"
-   },
-   "HSBC": {
-       "bankInfoText":"Payment concept",
-       "bankInfoRefText":"numeric reference",
-       "transferText":"Transfers to other banks"
-   }
-}
-
-bankName: "HSBC",
-````
-
-Now if the template contains the following you can display the bankInfoText message
-for HSBC (note bankName:HSBC in the data model). 
-
-````
-{@provide}
-BANK RULES: {#bankRules[bankName]}{.bankInfoText}{/bankRules[bankName]}
-{:bankRules}
-{@pre type="content" key="bankrules" mode="json" /}
-{/provide}
-````
+content list or map as a standard JavaScript array or an object with properties, respectively.
 

@@ -1,6 +1,6 @@
 {
   "name": "makara",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
   "scripts": {
@@ -8,10 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.paypal.com/webcore/dustjs-i18n.git"
-  },
-  "publishConfig": {
-    "registry": "http://npm.paypal.com"
+    "url": "https://github.paypal.com/webcore/makara.git"
   },
   "keywords": [
     "dust.js",
@@ -21,6 +18,36 @@
     "templates"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
+  "contributors": [
+    {
+      "name": "Richard Ragan",
+      "email": "rragan@paypal.com"
+    },
+    {
+      "name": "Stephen Westhafer",
+      "email": "swesthafer@paypal.com"
+    },
+    {
+      "name": "Lenny Markus",
+      "email": "lmarkus@paypal.com"
+    },
+    {
+      "name": "Jeff Harrell",
+      "email": "jharrell@paypal.com"
+    },
+    {
+      "name": "Jean-Charles Sisk",
+      "email": "jsisk@paypal.com"
+    },
+    {
+      "name": "Sanjeev Koranga",
+      "email": "skoranga@paypal.com"
+    },
+    {
+      "name": "Dereck Quock",
+      "email": "dquock@paypal.com"
+    }
+  ],
   "licenses": [
     {
       "type": "Apache 2.0",
@@ -44,7 +71,8 @@
     "findatag": "~0.0.8",
     "ent": "0.0.5",
     "q": "~0.9.6",
-    "spud": "~0.0.2"
+    "spud": "~0.0.2",
+    "graceful-fs": "~2.0.1"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",

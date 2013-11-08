@@ -5,7 +5,7 @@ Copyright (c) 2013, eBay Software Foundation All rights reserved.  Use of the ac
 
 
 var Q = require('q'),
-    fs = require('fs'),
+    fs = require('graceful-fs'),
     path = require('path'),
     domain = require('domain'),
     tagfinder = require('findatag'),
