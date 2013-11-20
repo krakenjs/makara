@@ -225,6 +225,11 @@ describe('handler', function () {
                 it: 'should replace $idx placeholders in before and after attributes, but not sep',
                 input: 'Hello: {@pre type="content" key="names" before="$idx" after="$idx" sep="$idx" /}',
                 expected: 'Hello: 00. Larry0$idx11. Moe1$idx22. Curly2'
+            },
+            {
+                it: 'should fail gracefully when mode is not set',
+                input: '{@pre type="content" key="states2" before="#" after="@" /}',
+                expected: ''
             }
         ];
 
