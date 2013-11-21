@@ -194,3 +194,17 @@ in your template.
 In addition to mode="paired", there is an alternate form, mode="json". This generates the
 content list or map as a standard JavaScript array or an object with properties, respectively.
 
+
+
+# Contributing
+
+Bugs and new features should be submitted using [Github issues](https://github.com/PayPal/makara/issues/new). Please include with a detailed description and the expected behaviour. If you would like to submit a change yourself do the following steps.
+
+1. Fork it.
+2. Create a branch (`git checkout -b fix-for-that-thing`)
+3. Commit a failing test (`git commit -am "adds a failing test to demonstrate that thing"`)
+3. Commit a fix that makes the test pass (`git commit -am "fixes that thing"`)
+4. Push to the branch (`git push origin fix-for-that-thing`)
+5. Open a [Pull Request](https://github.com/PayPal/makara/pulls)
+
+Please keep your branch up to date by rebasing upstream changes from master.
