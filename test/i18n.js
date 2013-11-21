@@ -145,6 +145,14 @@ describe('i18n', function () {
             });
         });
 
+        it('should throw callback error for invalid dust template', function (next) {
+            inject('/badsyntax', function (err, result) {
+                assert.ok(err);
+                assert.ok(!result);
+                next();
+            });
+        });
+
 
         describe('metadata', function () {
 
@@ -279,7 +287,7 @@ function inject(path, callback) {
         var data = [];
 
         res.on('data', function (chunk) {
-            data.push(chunk)
+            data.push(chunk);
         });
 
         res.on('end', function () {
