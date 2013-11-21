@@ -1,3 +1,7 @@
+##### v0.3.2 - 20131121
+**Features**
+- Handling bad dust syntax gracefully and returning the dust compile error as callback error.
+
 ##### v0.3.1 - 20131105
 **Features**
 - Switch to use graceful-fs for managing larges numbers of files.
