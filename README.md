@@ -1,6 +1,6 @@
 #### Makara
 
-Load content bundles from a specific location. Optionally, decorate an express app to consume pre-locaized templates,
+Load content bundles from a specific location. Optionally, decorate an express app to consume pre-localized templates,
 or localize templates on-the-fly. A summary of content property files and their use is also covered here.
 
 
