@@ -1,5 +1,5 @@
-##### v0.3.2 (in progress) - xxxxxxxx
-**Features**
+##### v0.3.2 - 20131205
+**Bugs**
 - Handling bad dust syntax gracefully and returning the dust compile error as callback error.
 
 ##### v0.3.1 - 20131105
