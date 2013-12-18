@@ -1,3 +1,8 @@
+##### v0.3.3 - 20131218
+**Bugs**
+- Fix grunt tasks for Windows
+
+
 ##### v0.3.2 - 20131205
 **Bugs**
 - Handling bad dust syntax gracefully and returning the dust compile error as callback error.
