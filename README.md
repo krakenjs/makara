@@ -63,7 +63,7 @@ folder is one or more language folders (e.g. en/). So locales/US/en/ will be the
 location for your master set of .properties files. 
 
 .properties files are correlated with the dust templates that use them, by path and name.
-So if you have a top level index.dust file, its content .properties filew will be at locales/US/en/index.properties
+So if you have a top level index.dust file, its content .properties file will be at locales/US/en/index.properties
 This holds all the external content strings used by that template. If your template is at
 widgets/display.dust then the content will be at locales/US/en/widgets/display.properties. If you have
 content you want to share across pages, then you should factor out use of that content into a
@@ -139,7 +139,7 @@ key.subkey=foo
 key.subkey[bar]=baz
 ```
 
-In this case, subkey is created originally as a string value but is then overriden as a map. The original
+In this case, subkey is created originally as a string value but is then overridden as a map. The original
 foo value will be discarded.
 
 Case 2:
@@ -148,7 +148,7 @@ key.subkey[0]=1
 key.subkey[foo]=bar
 ```
 
-In this case, key.subkey is created originally as a list but is then converted to a map wyhen the alphanumeric key is added.
+In this case, key.subkey is created originally as a list but is then converted to a map when the alphanumeric key is added.
 
 ##### How do I reference content in a dust template?
 
@@ -176,7 +176,7 @@ is done in the sep string.
 
 In some cases inlining won't do, even with before/after/sep.
 For example, if you need to pass the list as a parameter to a templating
-partial that might implement a Dropdown functionality.
+partial that might implement a dropdown functionality.
 
 For this, @pre with a mode="paired" attribute offers you more flexibility.
 
@@ -198,13 +198,13 @@ content list or map as a standard JavaScript array or an object with properties,
 
 # Contributing
 
-Bugs and new features should be submitted using [Github issues](https://github.com/PayPal/makara/issues/new). Please include with a detailed description and the expected behaviour. If you would like to submit a change yourself do the following steps.
+Bugs and new features should be submitted using [GitHub issues](https://github.com/paypal/makara/issues/new). Please include with a detailed description and the expected behavior. If you would like to submit a change yourself do the following steps.
 
 1. Fork it.
 2. Create a branch (`git checkout -b fix-for-that-thing`)
 3. Commit a failing test (`git commit -am "adds a failing test to demonstrate that thing"`)
 3. Commit a fix that makes the test pass (`git commit -am "fixes that thing"`)
 4. Push to the branch (`git push origin fix-for-that-thing`)
-5. Open a [Pull Request](https://github.com/PayPal/makara/pulls)
+5. Open a [Pull Request](https://github.com/paypal/makara/pulls)
 
 Please keep your branch up to date by rebasing upstream changes from master.
