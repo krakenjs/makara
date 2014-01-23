@@ -34,6 +34,10 @@ function endsWith(str, frag) {
     return str.lastIndexOf(frag) === (str.length - frag.length);
 }
 
+function expand(contentPath) {
+     return path.join(grunt.file.expand(contentPath).split('/'));	    
+}
+
 
 module.exports = function (grunt) {
 
@@ -69,7 +73,7 @@ module.exports = function (grunt) {
 
         // TODO: Currently only honors one locale directory.
         bundleRoot = Array.isArray(bundleRoot) ? bundleRoot[0] : bundleRoot;
-        bundles = grunt.file.expand(contentPath);
+        bundles = expand(contentPath);
 
 
         function processTemplate(metadata) {
