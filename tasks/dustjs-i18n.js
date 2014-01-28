@@ -34,12 +34,16 @@ function endsWith(str, frag) {
     return str.lastIndexOf(frag) === (str.length - frag.length);
 }
 
+function correctPathSeperator(filePath) {
+	return filePath.split('/').join(path.sep);
+
+}
 
 module.exports = function (grunt) {
 
 
     grunt.registerMultiTask('makara', 'An i18n preprocessor for Dust.js templates.', function () {
-        var done, options, contentPath, bundles, bundleRoot;
+        var done, options, contentPath, bundles, bundleRoot, filesSrc;
         var pathName = path.sep + '**' + path.sep + '*.properties';
 
         done = this.async();
@@ -53,6 +57,9 @@ module.exports = function (grunt) {
         if (!Array.isArray(contentPath)) {
             contentPath = [contentPath];
         }
+		
+	contentPath = contentPath.map(correctPathSeperator);
+	filesSrc = this.filesSrc.map(correctPathSeperator);  
 
         contentPath = contentPath.map(function (cp) {
             var regexp = new RegExp('([\\' + path.sep + ']?)$');
@@ -69,8 +76,7 @@ module.exports = function (grunt) {
 
         // TODO: Currently only honors one locale directory.
         bundleRoot = Array.isArray(bundleRoot) ? bundleRoot[0] : bundleRoot;
-        bundles = grunt.file.expand(contentPath);
-
+	bundles = (grunt.file.expand(contentPath)).map(correctPathSeperator);
 
         function processTemplate(metadata) {
             var deferred, domane;
@@ -103,7 +109,7 @@ module.exports = function (grunt) {
             .then(qutil.applyEach(loadBundles))
             .then(qutil.applyEach(removeRoot(bundleRoot)))
             .then(restructure)
-            .then(Permuter.promise(this.filesSrc, util.parseLangTag(options.fallback)))
+            .then(Permuter.promise(filesSrc, util.parseLangTag(options.fallback)))
             .then(qutil.applyEach(processTemplate))
             .done(
                 function () {
@@ -169,7 +175,7 @@ function restructure(bundles) {
                 d = d[dir] || (d[dir] = {});
             } else {
                 // remaining dirs are part of name
-                name = name + dir + '/';
+                name = name + dir + path.sep;
             }
             c++;
         }
