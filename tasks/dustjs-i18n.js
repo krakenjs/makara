@@ -34,7 +34,7 @@ function endsWith(str, frag) {
     return str.lastIndexOf(frag) === (str.length - frag.length);
 }
 
-function correctPathSeperator(filePath) {
+function correctPathSeparator(filePath) {
 	return filePath.split('/').join(path.sep);
 
 }
@@ -58,8 +58,8 @@ module.exports = function (grunt) {
             contentPath = [contentPath];
         }
 		
-	contentPath = contentPath.map(correctPathSeperator);
-	filesSrc = this.filesSrc.map(correctPathSeperator);  
+	contentPath = contentPath.map(correctPathSeparator);
+	filesSrc = this.filesSrc.map(correctPathSeparator);  
 
         contentPath = contentPath.map(function (cp) {
             var regexp = new RegExp('([\\' + path.sep + ']?)$');
@@ -76,7 +76,7 @@ module.exports = function (grunt) {
 
         // TODO: Currently only honors one locale directory.
         bundleRoot = Array.isArray(bundleRoot) ? bundleRoot[0] : bundleRoot;
-	bundles = (grunt.file.expand(contentPath)).map(correctPathSeperator);
+	bundles = (grunt.file.expand(contentPath)).map(correctPathSeparator);
 
         function processTemplate(metadata) {
             var deferred, domane;
