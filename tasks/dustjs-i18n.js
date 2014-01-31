@@ -34,7 +34,7 @@ function endsWith(str, frag) {
     return str.lastIndexOf(frag) === (str.length - frag.length);
 }
 
-function correctPathSeperator(filePath) {
+function correctPathSeparator(filePath) {
 	return filePath.split('/').join(path.sep);
 
 }
