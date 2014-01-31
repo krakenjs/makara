@@ -1,20 +1,20 @@
 /*───────────────────────────────────────────────────────────────────────────*\
-│  Copyright (C) 2013 eBay Software Foundation                                │
-│                                                                             │
-│hh ,'""`.                                                                    │
-│  / _  _ \  Licensed under the Apache License, Version 2.0 (the "License");  │
-│  |(@)(@)|  you may not use this file except in compliance with the License. │
-│  )  __  (  You may obtain a copy of the License at                          │
-│ /,'))((`.\                                                                  │
-│(( ((  )) ))    http://www.apache.org/licenses/LICENSE-2.0                   │
-│ `\ `)(' /'                                                                  │
-│                                                                             │
-│   Unless required by applicable law or agreed to in writing, software       │
-│   distributed under the License is distributed on an "AS IS" BASIS,         │
-│   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  │
-│   See the License for the specific language governing permissions and       │
-│   limitations under the License.                                            │
-\*───────────────────────────────────────────────────────────────────────────*/
+ │  Copyright (C) 2013 eBay Software Foundation                                │
+ │                                                                             │
+ │hh ,'""`.                                                                    │
+ │  / _  _ \  Licensed under the Apache License, Version 2.0 (the "License");  │
+ │  |(@)(@)|  you may not use this file except in compliance with the License. │
+ │  )  __  (  You may obtain a copy of the License at                          │
+ │ /,'))((`.\                                                                  │
+ │(( ((  )) ))    http://www.apache.org/licenses/LICENSE-2.0                   │
+ │ `\ `)(' /'                                                                  │
+ │                                                                             │
+ │   Unless required by applicable law or agreed to in writing, software       │
+ │   distributed under the License is distributed on an "AS IS" BASIS,         │
+ │   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  │
+ │   See the License for the specific language governing permissions and       │
+ │   limitations under the License.                                            │
+ \*───────────────────────────────────────────────────────────────────────────*/
 'use strict';
 
 
@@ -44,17 +44,17 @@ var proto = {
 };
 
 
-exports.create = function (app, config) {
-    var contentProvider, templateTranslator, ext, current, settings, viewCache;
+exports.create = function (app, i18n, specialization) {
+    var contentProvider, templateTranslator, ext, current, settings, viewCache, renderer, module;
 
     if (!isExpress(app)) {
-        config = app;
+        i18n = app;
         app = undefined;
     }
 
-    config.templateRoot = app ? app.get('views') : config.templateRoot;
-    contentProvider = exports.createProvider(config);
-    templateTranslator = exports.createTranslator(contentProvider, config);
+    i18n.templateRoot = app ? app.get('views') : i18n.templateRoot;
+    contentProvider = exports.createProvider(i18n);
+    templateTranslator = exports.createTranslator(contentProvider, i18n);
 
     if (app) {
         ext = app.get('view engine');
@@ -66,10 +66,16 @@ exports.create = function (app, config) {
             settings = (current && current.settings) || {};
             settings.cache = false;
 
-            app.engine(ext, engine.js(settings));
+            if (specialization) {
+                module = require('karka');
+                renderer = module.setSpecializationWrapperForEngine(specialization, engine.js(settings));
+            } else {
+                renderer = engine.js(settings);
+            }
+            app.engine(ext, renderer);
             dustjs.onLoad = views[ext].create(app, templateTranslator);
 
-            if (!!config.cache) {
+            if (!!i18n.cache) {
                 viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
                 dustjs.onLoad = viewCache.get.bind(viewCache);
             }
@@ -81,7 +87,7 @@ exports.create = function (app, config) {
         cache: {
             enumerable: true,
             writable: false,
-            value: !!config.cache
+            value: !!i18n.cache
         },
 
         contentProvider: {
