@@ -67,6 +67,13 @@ exports.create = function (app, i18n, specialization) {
             settings = (current && current.settings) || {};
             settings.cache = false;
 
+            dustjs.onLoad = views[ext].create(app, templateTranslator);
+
+            if (!!i18n.cache) {
+                viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
+                dustjs.onLoad = viewCache.get.bind(viewCache);
+            }
+
             if (specialization) {
                 module = require('karka');
                 renderer = module.setSpecializationWrapperForEngine(specialization, engine.js(settings));
@@ -74,12 +81,6 @@ exports.create = function (app, i18n, specialization) {
                 renderer = engine.js(settings);
             }
             app.engine(ext, renderer);
-            dustjs.onLoad = views[ext].create(app, templateTranslator);
-
-            if (!!i18n.cache) {
-                viewCache = cache.create(dustjs.onLoad, contentProvider.fallbackLocale);
-                dustjs.onLoad = viewCache.get.bind(viewCache);
-            }
         }
     }
 
