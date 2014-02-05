@@ -21,7 +21,7 @@ describe('i18n', function () {
 
     var config;
 
-    var app, engine, server, render;
+    var app, engine, server;
 
     before(function (next) {
         // Ensure the test case assumes it's being run from application root.
@@ -50,7 +50,6 @@ describe('i18n', function () {
 
         engine = dustjs;
         server = app.listen(8000, next);
-        render = app.render;
     });
 
 
@@ -71,9 +70,7 @@ describe('i18n', function () {
 
 
         after(function () {
-            app.render = render;
             engine.onLoad = undefined;
-            //i18n.cache.reset();
         });
 
 
@@ -201,9 +198,7 @@ describe('i18n', function () {
 
 
         after(function () {
-            app.render = render;
             engine.onLoad = undefined;
-            //i18n.cache.reset();
         });
 
 
@@ -242,10 +237,8 @@ describe('i18n', function () {
 
 
         after(function () {
-            app.render = render;
             engine.onLoad = undefined;
             config.cache = false;
-            //i18n.cache.reset();
         });
 
 

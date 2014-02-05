@@ -39,6 +39,7 @@ describe('bundle', function () {
             var bundle = content.getBundle('unknown', 'en_US');
             bundle.load(function (err, bundle) {
                 assert.isObject(err);
+                assert.equal(err.message, 'Content bundle not found: unknown');
                 assert.isNotObject(bundle);
                 next();
             });
