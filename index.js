@@ -76,7 +76,7 @@ exports.create = function (app, i18n, specialization) {
 
             if (specialization) {
                 module = require('karka');
-                renderer = module.setSpecializationWrapperForEngine(specialization, engine.js(settings));
+                renderer = module.create(specialization, engine.js(settings)).renderer;
             } else {
                 renderer = engine.js(settings);
             }
