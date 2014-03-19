@@ -46,7 +46,10 @@ module.exports = function(gulp){
         name = name + path.basename(bundle.rel);
         name = name.replace(path.extname(name), '');
         if (!d.bundle) {
-            d.bundle = {};
+            Object.defineProperty(d, 'bundle', {
+                enumerable: false,
+                value: {}
+            });
         }
         d.bundle[name] = bundle;
     }
@@ -110,7 +113,7 @@ module.exports = function(gulp){
             var self = this;
             var metadata = permute(file, locales, util.parseLangTag(fallback));
             metadata.forEach(function(meta){
-                self.push(meta);
+                self.push({file: file, metadata: meta});
             });
             cb();
         };
@@ -118,14 +121,19 @@ module.exports = function(gulp){
 
     // Use findatag to parse each template (already broken out for each locale)
     // the result is a new file object that has the @pre tag replaced with the content for the locale
-    function parseTemplate(metadata, enc, cb){
+    function parseTemplate(file_metadata, enc, cb){
         var self = this;
-        tagfinder.parse(metadata.src, handler.create(metadata.provider), function(err, result){
+        if (!file_metadata.metadata.provider){
+            // No bundle, so skip trying to parse
+            self.push(new File({path: file_metadata.metadata.dest, contents: file_metadata.file.contents}));
+            return cb();
+        }
+        tagfinder.parse(file_metadata.metadata.src, handler.create(file_metadata.metadata.provider), function(err, result){
             if (err){
                 console.log('Parse Error', err);
                 return cb();
             }
-            self.push(new File({path: metadata.dest, contents: new Buffer(result)}));
+            self.push(new File({path: file_metadata.metadata.dest, contents: new Buffer(result)}));
             return cb();
         });
     }
