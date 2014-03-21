@@ -75,7 +75,7 @@
     "graceful-fs": "~2.0.1"
   },
   "peerDependencies": {
-    "dustjs-linkedin": "~2.0.0",
+    "dustjs-linkedin": "~2.x.x",
     "adaro": "~0.1.4"
   }
 }
