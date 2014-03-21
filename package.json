@@ -63,7 +63,7 @@
     "grunt-simple-mocha": "~0.4.0",
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
-    "dustjs-linkedin": "~2.0.0",
+    "dustjs-linkedin": "^2.0.0",
     "dustjs-helpers": "~1.1.1",
     "adaro": "~0.1.4"
   },
