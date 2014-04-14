@@ -75,7 +75,16 @@ describe('metadata', function () {
             input: 'Hello, {@pre type="content" key="name" escape="true" /}!',
             expected: 'Hello, <edit data-key=\\"name\\" data-bundle=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original=\\"world\\">world</edit>!'
         },
-
+        {
+            it: 'should support the "attribute=true"',
+            input: '<img src="{@pre type="content" key="image" attribute="true"/}">',
+            expected: '<img src="abc.jpeg" data-key="image" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="abc.jpeg" data-editable="true">'
+        },
+        {
+            it: 'should support "attribute=true and escape=true"',
+            input: 'Hello <img src=\\"{@pre type="content" key="image" escape="true" attribute="true"/}\\">',
+            expected: 'Hello <img src=\\"abc.jpeg\\" data-key=\\"image\\" data-bundle=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original=\\"abc.jpeg\\" data-editable=\\"true\\">'
+        }
     ];
 
     buildScenarios(scenarios);
