@@ -69,7 +69,13 @@ describe('metadata', function () {
             it: 'should ignore unrecognized tags',
             input: 'Hello, {@pre type="link" /}!',
             expected: 'Hello, !'
-        }
+        },
+        {
+            it: 'should support the "escape=true"',
+            input: 'Hello, {@pre type="content" key="name" escape="true" /}!',
+            expected: 'Hello, <edit data-key=\\"name\\" data-bundle=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original=\\"world\\">world</edit>!'
+        },
+
     ];
 
     buildScenarios(scenarios);
