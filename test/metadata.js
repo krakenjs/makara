@@ -76,15 +76,22 @@ describe('metadata', function () {
             expected: 'Hello, <edit data-key=\\"name\\" data-bundle=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original=\\"world\\">world</edit>!'
         },
         {
-            it: 'should support the "attribute=true"',
-            input: '<img src="{@pre type="content" key="image" attribute="true"/}">',
-            expected: '<img src="abc.jpeg" data-key="image" data-bundle="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original="abc.jpeg" data-editable="true">'
+            it: 'should support the attribute type',
+            input: '<img src="{@pre type="content" key="image" attribute="src"/}">',
+            expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg" data-editable="true">'
         },
         {
-            it: 'should support "attribute=true and escape=true"',
-            input: 'Hello <img src=\\"{@pre type="content" key="image" escape="true" attribute="true"/}\\">',
-            expected: 'Hello <img src=\\"abc.jpeg\\" data-key=\\"image\\" data-bundle=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original=\\"abc.jpeg\\" data-editable=\\"true\\">'
-        }
+            it: 'should support attribute type and "escape=true"',
+            input: 'Hello <img src=\\"{@pre type="content" key="image" escape="true" attribute="src"/}\\">',
+            expected: 'Hello <img src=\\"abc.jpeg\\" data-key-src=\\"image\\" data-bundle-src=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original-src=\\"abc.jpeg\\" data-editable=\\"true\\">'
+        },
+        {
+            it: 'should support the multiple attributes',
+            input: '<img src="{@pre type="content" key="image" attribute="src"/}" alt="{@pre type="content" key="altimage" attribute="alt"/}">',
+            expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg" data-editable="true" alt="Header Image" data-key-alt="altimage" data-bundle-alt="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-alt="Header Image" data-editable="true">'
+        },
+
+
     ];
 
     buildScenarios(scenarios);
