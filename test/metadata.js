@@ -78,17 +78,17 @@ describe('metadata', function () {
         {
             it: 'should support the attribute type',
             input: '<img src="{@pre type="content" key="image" attribute="src"/}">',
-            expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg" data-editable="true">'
+            expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg">'
         },
         {
             it: 'should support attribute type and "escape=true"',
             input: 'Hello <img src=\\"{@pre type="content" key="image" escape="true" attribute="src"/}\\">',
-            expected: 'Hello <img src=\\"abc.jpeg\\" data-key-src=\\"image\\" data-bundle-src=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original-src=\\"abc.jpeg\\" data-editable=\\"true\\">'
+            expected: 'Hello <img src=\\"abc.jpeg\\" data-key-src=\\"image\\" data-bundle-src=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original-src=\\"abc.jpeg\\">'
         },
         {
             it: 'should support the multiple attributes',
             input: '<img src="{@pre type="content" key="image" attribute="src"/}" alt="{@pre type="content" key="altimage" attribute="alt"/}">',
-            expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg" data-editable="true" alt="Header Image" data-key-alt="altimage" data-bundle-alt="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-alt="Header Image" data-editable="true">'
+            expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg" alt="Header Image" data-key-alt="altimage" data-bundle-alt="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-alt="Header Image">'
         },
 
 
