@@ -71,19 +71,14 @@ describe('metadata', function () {
             expected: 'Hello, !'
         },
         {
-            it: 'should support the "escape=true"',
-            input: 'Hello, {@pre type="content" key="name" escape="true" /}!',
-            expected: 'Hello, <edit data-key=\\"name\\" data-bundle=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original=\\"world\\">world</edit>!'
+            it: 'should support the "encode=true"',
+            input: 'Hello, {@pre type="content" key="name" encode="true" /}!',
+            expected: 'Hello, &lt;edit data-key=&quot;name&quot; data-bundle=&quot;' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties&quot; data-original=&quot;world&quot;&gt;world&lt;/edit&gt;!'
         },
         {
             it: 'should support the attribute type',
             input: '<img src="{@pre type="content" key="image" attribute="src"/}">',
             expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg">'
-        },
-        {
-            it: 'should support attribute type and "escape=true"',
-            input: 'Hello <img src=\\"{@pre type="content" key="image" escape="true" attribute="src"/}\\">',
-            expected: 'Hello <img src=\\"abc.jpeg\\" data-key-src=\\"image\\" data-bundle-src=\\"' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties\\" data-original-src=\\"abc.jpeg\\">'
         },
         {
             it: 'should support the multiple attributes',
