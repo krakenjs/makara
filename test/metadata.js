@@ -81,6 +81,11 @@ describe('metadata', function () {
             expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg">'
         },
         {
+            it: 'should support the attribute type and encode=true',
+            input: '&lt;img src=&quot;{@pre type="content" key="image" attribute="src" encode="true"/}&quot;&gt;',
+            expected: '&lt;img src=&quot;abc.jpeg&quot; data-key-src=&quot;image&quot; data-bundle-src=&quot;' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties&quot; data-original-src=&quot;abc.jpeg&quot;&gt;'
+        },
+        {
             it: 'should support the multiple attributes',
             input: '<img src="{@pre type="content" key="image" attribute="src"/}" alt="{@pre type="content" key="altimage" attribute="alt"/}">',
             expected: '<img src="abc.jpeg" data-key-src="image" data-bundle-src="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-src="abc.jpeg" alt="Header Image" data-key-alt="altimage" data-bundle-alt="' + process.cwd()  + '/test/fixtures/locales/US/en/handler.properties" data-original-alt="Header Image">'
