@@ -16,7 +16,7 @@ describe('i18n', function () {
     var LOCALIZED = '<p>Foo</p><p> </p><p>Bar</p><p>Baz</p>';
     var CN_LOCALIZED = '<p>請</p><p> </p><p>登</p><p>錄</p>';
     var NO_BUNDLE = '<h1>No bundle</h1>';
-    var INVALID_KEY = '<p>Missing key: badkey.invalid</p>';
+    var INVALID_KEY = '<p>☃ Missing key: badkey.invalid ☃</p>';
 
     var config;
 

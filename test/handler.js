@@ -66,7 +66,7 @@ describe('handler', function () {
         {
             it: 'should gracefully handle missing \'key\' attribute.',
             input: 'Hello, {@pre type="content" /}!',
-            expected: 'Hello, Missing key: undefined!'
+            expected: 'Hello, ☃ Missing key: undefined ☃!'
         },
         {
             it: 'should replace a pre tag with localized content and support mode=json',
