@@ -208,11 +208,13 @@ This example deals with the case where you want both the key and the value of a 
 
 Your .properties might look like:
 
+```
  stateList[AL]=Alabama
  stateList[AK]=Alaska
  stateList[AZ]=Arizona
  stateList[AR]=Arkansas
  ...
+ ```
  
 With this, you have a viable representation that supports using the state code for the value in the option tag and the state name as the displayed value. To get the content into the template, you need to use the @pre tag. @pre inlines the content which, by itself, would create a problem for turning the above into a select list. To pull off the solution, you need two things: the mode="paired" parameter on the @pre tag and to use the @provide custom helper (https://github.com/rragan/dust-motes/tree/master/src/helpers/data/provide)
 
@@ -227,7 +229,7 @@ Now we have this JSON inlined in our template. To make the data available to tem
 
 It is not as complex as it sounds. Look at this code snippet that constructs a select dropdown of the states and marks one of them selected (assuming the value "chosen" is in the data model).
 
-
+```
      {@provide selected=chosen}
      <select name="states">
      {#stateList}
@@ -237,6 +239,7 @@ It is not as complex as it sounds. Look at this code snippet that constructs a s
      {:stateList}
      {@pre type="content" key="stateList" mode="paired" /}
      {/provide}
+ ```
  
 Since @provide is just another helper, it can take ordinary parameters so in this example, the code expects a value named "selected" and we have something named "chosen" so we use the normal dust parameter mechanism to "pass it".
 
