@@ -102,7 +102,7 @@ describe('bundle', function () {
                 assert.isNull(err);
                 assert.isObject(bundle);
                 assert.ok(bundleFactory.isContentBundle(bundle));
-                assert.strictEqual(bundle.get('test.unknown'), '☃test.unknown☃');
+                assert.strictEqual(bundle.get('test.unknown'), '☃ Missing key: test.unknown ☃');
                 next();
             });
         });
@@ -126,7 +126,7 @@ describe('bundle', function () {
                 assert.isNull(err);
                 assert.isObject(bundle);
                 assert.ok(bundleFactory.isContentBundle(bundle));
-                assert.strictEqual(bundle.get('test.unknown'), '☃test.unknown☃');
+                assert.strictEqual(bundle.get('test.unknown'), '☃ Missing key: test.unknown ☃');
                 next();
             });
         });
