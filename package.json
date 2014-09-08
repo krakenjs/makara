@@ -71,6 +71,9 @@
     "findatag": "~0.0.8",
     "graceful-fs": "~2.0.1",
     "he": "~0.4.1",
+    "findatag": "~0.0.8",
+    "graceful-fs": "~2.0.1",
+    "grunt-localizr": "^0.1.0",
     "q": "~0.9.6",
     "spud": "~0.0.2"
   },
