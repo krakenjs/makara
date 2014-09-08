@@ -75,7 +75,7 @@
     "graceful-fs": "~2.0.1",
     "grunt-localizr": "^0.1.0",
     "q": "~0.9.6",
-    "spud": "~0.0.2"
+    "spud": "~0.0.3"
   },
   "peerDependencies": {
     "dustjs-linkedin": "^2.0.0",
