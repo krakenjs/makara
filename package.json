@@ -69,10 +69,10 @@
   },
   "dependencies": {
     "findatag": "~0.0.8",
-    "ent": "0.0.5",
+    "graceful-fs": "~2.0.1",
+    "he": "~0.4.1",
     "q": "~0.9.6",
-    "spud": "~0.0.2",
-    "graceful-fs": "~2.0.1"
+    "spud": "~0.0.2"
   },
   "peerDependencies": {
     "dustjs-linkedin": "^2.0.0",
