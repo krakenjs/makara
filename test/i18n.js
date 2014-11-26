@@ -48,7 +48,7 @@ describe('i18n', function () {
         });
 
         engine = dustjs;
-        server = app.listen(8000, next);
+        server = app.listen(0, next);
     });
 
 
@@ -271,26 +271,26 @@ describe('i18n', function () {
 
     });
 
+    function inject(path, callback) {
+        var req = http.request({ method: 'GET', port: server.address().port, path: path }, function (res) {
+            var data = [];
+
+            res.on('data', function (chunk) {
+                data.push(chunk);
+            });
+
+            res.on('end', function () {
+                var body = Buffer.concat(data).toString('utf8');
+                if (res.statusCode !== 200) {
+                    callback(new Error(body));
+                    return;
+                }
+                callback(null, body);
+            });
+        });
+        req.on('error', callback);
+        req.end();
+    }
 });
 
 
-function inject(path, callback) {
-    var req = http.request({ method: 'GET', port: 8000, path: path }, function (res) {
-        var data = [];
-
-        res.on('data', function (chunk) {
-            data.push(chunk);
-        });
-
-        res.on('end', function () {
-            var body = Buffer.concat(data).toString('utf8');
-            if (res.statusCode !== 200) {
-                callback(new Error(body));
-                return;
-            }
-            callback(null, body);
-        });
-    });
-    req.on('error', callback);
-    req.end();
-}
