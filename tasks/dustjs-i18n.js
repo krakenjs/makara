@@ -29,7 +29,10 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('makara', 'An i18n preprocessor for Dust.js templates.', function () {
         if (grunt.config.get('localizr') && grunt.config.get('makara')) {
-            throw new Error("you can't use localizr and makara configurations in the same project. Time to move over to localizr.");
+            if (grunt.config.get('localizr') && grunt.config.get('makara')) {
+                grunt.config.set('makara', undefined);
+                console.warn('Makara is now using localizr for grunt task to compile templates!! Considered moving to kraken 1.0 yet ?');
+            }
         }
 
         if (grunt.config.get('makara')) {
