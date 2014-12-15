@@ -1,4 +1,9 @@
-# Makara
+Makara
+======
+
+Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+
+[![Build Status](https://travis-ci.org/krakenjs/makara.svg?branch=master)](https://travis-ci.org/krakenjs/makara)
 
 Load content bundles from a specific location. Optionally, decorate an express app to consume pre-localized templates,
 or localize templates on-the-fly. A summary of content property files and their use is also covered here.
