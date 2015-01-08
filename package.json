@@ -1,6 +1,6 @@
 {
   "name": "makara",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "i18n support for dust.js templates",
   "main": "index.js",
   "scripts": {
