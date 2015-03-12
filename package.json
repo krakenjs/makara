@@ -55,17 +55,18 @@
     }
   ],
   "devDependencies": {
-    "mocha": "~1.11.0",
+    "adaro": "~0.1.4",
     "chai": "~1.7.1",
-    "grunt": "~0.4.1",
+    "dustjs-helpers": "~1.1.1",
+    "dustjs-linkedin": "^2.0.0",
     "express": "~3.4.x",
-    "grunt-dustjs": "~0.2.2",
-    "grunt-simple-mocha": "~0.4.0",
+    "grunt": "~0.4.1",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.0",
-    "dustjs-linkedin": "^2.0.0",
-    "dustjs-helpers": "~1.1.1",
-    "adaro": "~0.1.4"
+    "grunt-dustjs": "~0.2.2",
+    "grunt-simple-mocha": "~0.4.0",
+    "mocha": "~1.11.0"
   },
   "dependencies": {
     "findatag": "^1.0.0",
