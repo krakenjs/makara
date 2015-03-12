@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "findatag": "^1.0.0",
-    "graceful-fs": "~2.0.1",
+    "graceful-fs": "~3.0.1",
     "grunt-localizr": "^0.2.0",
     "he": "~0.4.1",
     "q": "~0.9.6",
