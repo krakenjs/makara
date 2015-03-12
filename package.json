@@ -57,8 +57,8 @@
   "devDependencies": {
     "adaro": "~0.1.4",
     "chai": "^2.0.0",
-    "dustjs-helpers": "~1.1.1",
-    "dustjs-linkedin": "^2.0.0",
+    "dustjs-helpers": "~1.5.0",
+    "dustjs-linkedin": "~2.5.0",
     "express": "~3.4.x",
     "grunt": "~0.4.1",
     "grunt-cli": "^0.1.13",
@@ -77,7 +77,7 @@
     "spud": "^1.0.0"
   },
   "peerDependencies": {
-    "dustjs-linkedin": "^2.0.0",
-    "adaro": "~0.1.4"
+    "dustjs-linkedin": "~2.5.0",
+    "adaro": "~0.1.7"
   }
 }
