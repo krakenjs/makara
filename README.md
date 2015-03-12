@@ -235,15 +235,18 @@ Now we have this JSON inlined in our template. To make the data available to tem
 It is not as complex as it sounds. Look at this code snippet that constructs a select dropdown of the states and marks one of them selected (assuming the value "chosen" is in the data model).
 
 ```
-     {@provide selected=chosen}
-     <select name="states">
-     {#stateList}
-     <option value="{$id}"{@if cond="'{selected}' == '{$id)'} selected="selected"{/if}>{$elt}option>
+{@provide selected=chosen}
+  <select name="states">
+    {#stateList}
+      <option value="{$id}"
+              {@if cond="'{selected}' == '{$id}'"} selected="selected" {/if}>
+        {$elt}
+      </option>
     {/stateList}
-     </select>
-     {:stateList}
-     {@pre type="content" key="stateList" mode="paired" /}
-     {/provide}
+  </select>
+{:stateList}
+  {@pre type="content" key="stateList" mode="paired" /}
+{/provide}
  ```
  
 Since @provide is just another helper, it can take ordinary parameters so in this example, the code expects a value named "selected" and we have something named "chosen" so we use the normal dust parameter mechanism to "pass it".
