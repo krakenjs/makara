@@ -149,6 +149,14 @@ describe('i18n', function () {
             });
         });
 
+        it('should describe its failure when loading an unknown template', function (next) {
+            inject('/notfound?country=US&language=en', function (err, result) {
+                assert.ok(err);
+                assert.ok(err.message.indexOf('Error: Template &#39;notfound&#39; not found in locale &#39;en-US&#39;'));
+                assert.ok(!result);
+                next();
+            });
+        });
 
         describe('metadata', function () {
 
@@ -216,6 +224,15 @@ describe('i18n', function () {
                 assert.ok(!err);
                 assert.ok(result);
                 assert.ok(~result.indexOf('<p>Bar</p><p>Baz</p>'));
+                next();
+            });
+        });
+
+        it('should describe its failure when loading an unknown template', function (next) {
+            inject('/notfound?country=US&language=en', function (err, result) {
+                assert.ok(err);
+                assert.ok(err.message.indexOf('Error: Template &#39;notfound&#39; not found in locale &#39;en-US&#39;'));
+                assert.ok(!result);
                 next();
             });
         });
