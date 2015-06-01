@@ -1,3 +1,8 @@
+##### v1.0.0 - 20150312
+
+**Breaking changes**
+- Update dependencies and pin down dust versions
+
 ##### v0.3.3 - 20131218
 **Bugs**
 - Fix grunt tasks for Windows
