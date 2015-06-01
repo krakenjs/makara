@@ -1,15 +1,16 @@
 Makara
 ======
 
-Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+A module to set up internationalization in Kraken.
+
+Lead Maintainer: [Aria Stewart](https://github.com/aredridel)
 
 [![Build Status](https://travis-ci.org/krakenjs/makara.svg?branch=master)](https://travis-ci.org/krakenjs/makara)
 
-Load content bundles from a specific location. Optionally, decorate an express app to consume pre-localized templates,
-or localize templates on-the-fly. A summary of content property files and their use is also covered here.
 
+Using Makara
+------------
 
-## Example
 
 ```javascript
 var i18n = require('makara');
@@ -22,58 +23,90 @@ provider.getBundle('index', 'en_US', function (err, bundle) {
 
 
 ```javascript
-var express = require('express'),
-    i18n = require('makara'),
-    dustjs = require('adaro');
-
+var express = require('express');
+var makara = require('makara');
 
 var app = express();
 
-app.engine('dust', dustjs.dust({ cache: false }));
-app.engine('js', dustjs.js({ cache: false }));
+app.engine('dust', makara.dust({}));
+app.engine('js', makara.js({}));
 
 app.set('views', 'path/to/templates');
 app.set('view engine', 'dust');
-app.set('view cache', false);
 
-// Decorate express app with localized template rendering capabilities.
-i18n.create(app, config);
+app.use(makara({
+    i18n: {
+        contentPath: path.resolve(__dirname, 'locales'),
+        fallback: 'en-US'
+    },
+    specialization: {
+        'oldtemplate': [
+            {
+                is: 'newtemplate',
+                when: {
+                    'testmode': 'beta'
+                }
+            }
+        ]
+    }
+}));
+
+app.get('/path', function (req, res) {
+    res.render('localizedtemplate');
+
+    // Or
+
+    makara.getBundler(req).get('contentbundle', function (err, data) {
+        // Do something with err and data here
+    });
+});
 ```
 
 
-## Configuration
+Configuration
+-------------
 
-Required
-- contentPath (contentRoot) - (String)
-- fallback (fallbackLocale) - (String, Object)
-- templatePath (templateRoot) - (String)
+Required for i18n
+* `i18n.contentPath` - `String`, the root to search for content in.
+* `i18n.fallback` - `String` or `Object` as [`bcp47`](http://npmjs.org/package/bcp47) creates, the locale to use when content isn't found for the locale requested.
 
 Optional
-- enableMetadata (enableHtmlMetadata) - (boolean, default: false)
-- cache - (boolean, default: false)
+* `enableMetadata` - `Boolean,` defaults to `false`. Sets up metadata editing tags for integration with in-place content editing systems.
+* `cache` - `Boolean`, defaults to `false`. Whether the dust engine should cache its views.
 
-## Content
+Content
+-------
 
-Content intended for localization is stored in .properties files as simple key=value pairs.
-These are the files that hold the content strings for the different languages your application supports.
-Normally, you are likely to start with a master set of content (likely in English) and the L10N
-process will populate corresponding files for the other languages you will need.
+Content intended for localization is stored in `.properties` files as simple
+`key=value` pairs.
 
-### Placement of .properties files
+These are the files that hold the content strings for the different languages
+your application supports.
 
-The root of the .properties content files is the locales folder at the top level of your
-project. Under it will be a folder per country (e.g., `US/`, `DE/`, ...). Below each country
-folder is one or more language folders (e.g. `en/`). So `locales/US/en/` will be the likely
-location for your master set of .properties files.
+Normally, you are likely to start with a master set of content (likely in
+English) and the localization process will populate corresponding files for the
+other languages you will need.
 
-.properties files are correlated with the dust templates that use them, by path and name.
-So if you have a top level index.dust file, its content .properties file will be at `locales/US/en/index.properties`
-This holds all the external content strings used by that template. If your template is at
-`widgets/display.dust` then the content will be at `locales/US/en/widgets/display.properties`. If you have
-content you want to share across pages, then you should factor out use of that content into a
-separate partial and use that partial to achieve content sharing.
+### Placement of `.properties` files
 
-### What's in a .properties file
+The root of the `.properties` content files is the locales folder at the top level of your
+project. Under it will be a folder per country (as in `US/`, `DE/`, et cetera).
+Below each country folder is one or more language folders (as in `en/`, `de/`).
+So `locales/US/en/` will be the likely location for your master set of
+`.properties` files.
+
+`.properties` files are correlated with the dust templates that use them, by
+path and name.
+
+If you have a top level `index.dust` file, its content `.properties` file will
+be at `locales/US/en/index.properties` This holds all the external content
+strings used by that template. If your template is at `widgets/display.dust`
+then the content for US English will be at `locales/US/en/widgets/display.properties`. 
+If you have content you want to share across pages, then you should factor out
+use of that content into a separate partial and use that partial to achieve
+content sharing.
+
+### What's in a `.properties` file
 
 The format is simple: `key=value` with one message per line encoded as UTF-8.
 Comments are prefixed with `#` and may be used for metadata annotations.
@@ -99,37 +132,41 @@ index.states[AZ]=Arizona
 index.states[CA]=California
 ```
 
-We are using the name of the file to start our key on each line. This is strictly
-a convention that makes the path to the file clear.
-The above could have omitted the leading `index.` and the results would be the same.
-Text to the right of the `=` sign is a simple message string with the text of the message.
-If you have runtime values to be inserted, use dust brace to select the value
-from the dust template context as in the `index.greeting` line. This works because
-the content strings are inlined into your template during the build process so references
-like `{userName}` are just handled by dust. Note that there is no restriction on
-inserting HTML tags into the messages. They are just another string of characters
-as far as the content processing is concerned.
+We are using the name of the file to start our key on each line. This is
+strictly a convention that makes the path to the file clear.
 
-In addition to simple strings, we support lists (e.g, indexable list of messages) and
-maps (content indexable collection of messages). So the `index.ccList` above might
-be used to provide a list of values to go in a list of allowed credit cards.
+The above could have omitted the leading `index.` and the results would be the same.
+
+Text to the right of the `=` sign is a simple message string with the text of the message.
+
+If you have runtime values to be inserted, use dust brace to select the value
+from the dust template context as in the `index.greeting` line. Note that there
+is no restriction on inserting HTML tags into the messages. They are just
+another string of characters as far as the content processing is concerned.
+
+In addition to simple strings, we support lists and maps. The `index.ccList`
+above might be used to provide a list of values to go in a list of allowed credit cards.
+
 The `index.states` might be used to populate a dropdown list of states with the
 key as the option tag value and the full state name as the visible text.
 
-To support writing the key part in natural languages other than English, all UTF-8 characters
-are allowed with a few exceptions needed to make the key=value syntax work. The
-exceptions are:
+To support writing the key part in natural languages other than English, all
+UTF-8 characters are allowed with a few exceptions needed to make the key=value
+syntax work. The exceptions are:
 
-- No equal sign in key part (e.g. first equal sign starts the value)
-- No periods in key part (used to allow keys like a.b.c)
-- No square brackets (used for subscript and map key notation)
-- May not start with # (Used for comments)
+* No equal sign in key part (e.g. first equal sign starts the value)
+* No periods in key part (used to allow keys like a.b.c)
+* No square brackets (used for subscript and map key notation)
+* May not start with # (Used for comments)
 
 These same general restrictions apply to map key values.  If you need to
 use characters that are restricted, you can do so using either of these
 escaping mechanisms:
-- `\udddd` - Like JavaScript but only handles the same characters supported by this notation in JavaScript
-- `\u{dddddd}` - Like JavaScript ES6 notation and handles all possible Unicode characters
+
+* `\udddd` - Like JavaScript but only handles the same characters supported by
+  this notation in JavaScript
+* `\u{dddddd}` - Like JavaScript ES6 notation and handles all possible Unicode
+  characters
 
 For example,
 
@@ -148,8 +185,8 @@ key.subkey=foo
 key.subkey[bar]=baz
 ```
 
-In this case, subkey is created originally as a string value but is then overridden as a map. The original
-foo value will be discarded.
+In this case, subkey is created originally as a string value but is then
+overridden as a map. The original foo value will be discarded.
 
 Case 2:
 ```
@@ -157,7 +194,8 @@ key.subkey[0]=1
 key.subkey[foo]=bar
 ```
 
-In this case, key.subkey is created originally as a list but is then converted to a map when the alphanumeric key is added.
+In this case, `key.subkey` is created originally as a list but is then converted
+to a map when the alphanumeric key is added.
 
 ### How do I reference content in a dust template?
 
@@ -174,25 +212,27 @@ A sample usage of `@pre` might be:
 ```
 
 Lists and maps are bit trickier when it comes to inlining.
+
 There are two approaches available. The first uses three additional
-attributes on the @pre tag, before="xxx" and after="yyy" and  sep="z".
+attributes on the `@pre tag`, `before="xxx"` and `after="yyy"` and `sep="z"`.
 When emitting the list elements, each will be prefixed by the "before"
 string, if there is one, suffixed by the "after" string, if there is one,
 and separated by the "sep" string, if there is one. With sep, the last
-element is not followed by the separator. Note that the value {$idx} can be
+element is not followed by the separator. Note that the value `{$idx}` can be
 used in the before/after attribute strings and it will be replaced by
-the current iteration count when inlining the lists. Similarly, {$key}
+the current iteration count when inlining the lists. Similarly, `{$key}`
 will be replaced with the current key when inlining a map. No replacement
 is done in the sep string.
 
-In some cases inlining won't do, even with before/after/sep.
-For example, if you need to pass the list as a parameter to a templating
-partial that might implement a dropdown functionality.
+In some cases inlining won't do, even with before/after/sep. For example, if
+you need to pass the list as a parameter to a templating partial that might
+implement a dropdown functionality.
 
 For this, `@pre` with a `mode="paired"` attribute offers you more flexibility.
 
-The `mode="paired"` parameter produces the content list such that you can use both the
-index of the element for the value in an option tag and the value for the displayable text.
+The `mode="paired"` parameter produces the content list such that you can use
+both the index of the element for the value in an option tag and the value for
+the displayable text.
 
 The `mode="paired"` attribute delivers the content in the  form of a JSON
 object, which in the case of a list of months might look like:
@@ -201,45 +241,66 @@ object, which in the case of a list of months might look like:
 [{$id:0,$elt:"Jan"}, {$id:1,$elt:"Feb"},.. ]
 ```
 
-This gives you more ability to work with both the list/map value and the element value
-in your template.
+This gives you more ability to work with both the list/map value and the
+element value in your template.
 
-In addition to `mode="paired"` there is an alternate form, `mode="json"` This generates the
-content list or map as a standard JavaScript array or an object with properties, respectively.
+In addition to `mode="paired"` there is an alternate form, `mode="json"` This
+generates the content list or map as a standard JavaScript array or an object
+with properties, respectively.
 
 ### Extensive example for use of mode="paired" and the provide helper
 
-This example deals with the case where you want both the key and the value of a content map. For example, suppose you want to create a select dropdown for all the states and have a value of the state code on each option tag.
+This example deals with the case where you want both the key and the value of a
+content map. For example, suppose you want to create a select dropdown for all
+the states and have a value of the state code on each option tag.
 
-Your .properties might look like:
+Your `.properties` might look like:
 
 ```
- stateList[AL]=Alabama
- stateList[AK]=Alaska
- stateList[AZ]=Arizona
- stateList[AR]=Arkansas
- ...
- ```
- 
-With this, you have a viable representation that supports using the state code for the value in the option tag and the state name as the displayed value. To get the content into the template, you need to use the @pre tag. @pre inlines the content which, by itself, would create a problem for turning the above into a select list. To pull off the solution, you need two things: the mode="paired" parameter on the @pre tag and to use the @provide custom helper (https://github.com/rragan/dust-motes/tree/master/src/helpers/data/provide)
+stateList[AL]=Alabama
+stateList[AK]=Alaska
+stateList[AZ]=Arizona
+stateList[AR]=Arkansas
+...
+```
 
-mode="paired" causes the @pre tag to output the map as a JSON array with paired $id/$elt values.
-Writing {@pre type="content" key="stateList" mode="paired" /} results in
+With this, you have a viable representation that supports using the state code
+for the value in the option tag and the state name as the displayed value. To
+get the content into the template, you need to use the `@pre` tag. `@pre`
+inlines the content which, by itself, would create a problem for turning the
+above into a select list. To pull off the solution, you need two things: the
+`mode="paired"` parameter on the `@pre` tag and to use the [`@provide` custom helper](https://github.com/rragan/dust-motes/tree/master/src/helpers/data/provide)
 
- [{"$id":"AL","$elt":"Alabama"},{"$id":"AK","$elt":"Alaska"},... ]
- 
-Now we have this JSON inlined in our template. To make the data available to template code, we need to make it accessible to dust as if it was in the data model or passed as a parameter.
+`mode="paired"` causes the `@pre` tag to output the map as a JSON array with
+paired `$id`/`$elt` values.
 
-@provide processes each dust named block (e.g. {:stateList} in our case) creating a parameter bearing the name of the block and holding a value formed by a JSON.parse of the body of the block. The result of this, in our example, is equivalent to putting a parameter named stateList with value of a JSON array holding all the state data into the context where dust can reference it. Note that you can only use the name within the main block of provide -- the template area right after @provide up to the first named block.
+Writing `{@pre type="content" key="stateList" mode="paired" /}` results in
 
-It is not as complex as it sounds. Look at this code snippet that constructs a select dropdown of the states and marks one of them selected (assuming the value "chosen" is in the data model).
+```
+[{"$id":"AL","$elt":"Alabama"},{"$id":"AK","$elt":"Alaska"},... ]
+```
+
+Now we have this JSON inlined in our template. To make the data available to
+template code, we need to make it accessible to dust as if it was in the data
+model or passed as a parameter.
+
+`@provide`` processes each dust named block (such as `{:stateList}` in our
+case) creating a parameter bearing the name of the block and holding a value
+formed by a `JSON.parse` of the body of the block. The result of this, in our
+example, is equivalent to putting a parameter named stateList with value of a
+JSON array holding all the state data into the context where dust can reference
+it. Note that you can only use the name within the main block of provide -- the
+template area right after `@provide` up to the first named block.
+
+It is not as complex as it sounds. Look at this code snippet that constructs a
+select dropdown of the states and marks one of them selected (assuming the
+value "chosen" is in the data model).
 
 ```
 {@provide selected=chosen}
   <select name="states">
     {#stateList}
-      <option value="{$id}"
-              {@if cond="'{selected}' == '{$id}'"} selected="selected" {/if}>
+      <option value="{$id}" {@eq key="{selected}" value='{$id}'"} selected="selected" {/eq}>
         {$elt}
       </option>
     {/stateList}
@@ -248,13 +309,18 @@ It is not as complex as it sounds. Look at this code snippet that constructs a s
   {@pre type="content" key="stateList" mode="paired" /}
 {/provide}
  ```
- 
-Since @provide is just another helper, it can take ordinary parameters so in this example, the code expects a value named "selected" and we have something named "chosen" so we use the normal dust parameter mechanism to "pass it".
+
+Since `@provide` is just another helper, it can take ordinary parameters so in
+this example, the code expects a value named "selected" and we have something
+named "chosen" so we use the normal dust parameter mechanism to "pass it".
 
 
-## Contributing
+Contributing
+------------
 
-Bugs and new features should be submitted using [GitHub issues](https://github.com/paypal/makara/issues/new). Please include with a detailed description and the expected behavior. If you would like to submit a change yourself do the following steps.
+Bugs and new features should be submitted using [GitHub issues](https://github.com/paypal/makara/issues/new).
+Please include with a detailed description and the expected behavior. If you
+would like to submit a change yourself do the following steps.
 
 1. Fork it.
 2. Create a branch (`git checkout -b fix-for-that-thing`)
