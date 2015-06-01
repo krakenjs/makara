@@ -57,9 +57,11 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "express": "^4.12.4",
+    "supertest": "^1.0.1",
     "tap": "^1.2.0"
   },
   "dependencies": {
+    "adaro": "^1.0.0-9",
     "engine-munger": "v1.0.0-2"
   }
 }
