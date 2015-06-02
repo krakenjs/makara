@@ -36,10 +36,12 @@ module.exports = function setupViewClass(options) {
     if (options.i18n) {
         opts['.properties'].root = [].concat(options.i18n.contentPath);
         opts['.properties'].i18n = {
+            formatPath: formatPath,
             fallback: options.i18n.fallback
         };
 
         opts['.js'].i18n = {
+            formatPath: formatPath,
             fallback: options.i18n.fallback
         };
 
@@ -89,6 +91,17 @@ function getBundler(req) {
     }
 }
 
+function formatPath(locale) {
+    if (!locale || !locale.langtag || !locale.langtag.language) {
+        var e = new Error("locale must be a bcp47-style object");
+        e.code = 'EINVALIDTYPE'
+        throw e;
+    } else {
+        return locale.langtag.region + '/' + locale.langtag.language.language;
+    }
+}
+
 module.exports.js = require('adaro').js;
 module.exports.dust = require('adaro').dust;
 module.exports.getBundler = getBundler;
+module.exports.formatPath = formatPath;
