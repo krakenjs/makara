@@ -4,7 +4,8 @@
   "description": "Kraken support for i18n and specialization in dust.js templates",
   "main": "index.js",
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "nyc tap test/*.js && nyc report",
+    "coverage": "nyc report --reporter=lcov"
   },
   "repository": {
     "type": "git",
@@ -57,6 +58,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "express": "^4.12.4",
+    "nyc": "^2.2.1",
     "supertest": "^1.0.1",
     "tap": "^1.2.0"
   },
