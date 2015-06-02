@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "adaro": "^1.0.0-9",
+    "aproba": "^1.0.1",
     "bundalo": "^0.2.9",
     "engine-munger": "v1.0.0-3",
     "es6-weak-map": "^1.0.2"

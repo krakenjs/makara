@@ -21,6 +21,7 @@ var makeViewClass = require('engine-munger');
 
 var WeakMap = require('es6-weak-map');
 var bundalo = require('bundalo');
+var aproba = require('aproba');
 
 var associated = new WeakMap();
 
@@ -62,6 +63,7 @@ module.exports = function setupViewClass(options) {
 
         associated.set(req, {
             get: function (bundle, model, cb) {
+                aproba('*OF', arguments);
                 if (!bundler) {
                     return cb(new Error('i18n is not configured'));
                 } else {

@@ -110,13 +110,13 @@ tap.test('unconfigured middleware', function (t) {
         t.throws(function () {
             makara.getBundler(req).get('whatever');
         }, {
-            message: "undefined is not a function"
+            code: "EMISSINGARG"
         });
 
         t.throws(function () {
             makara.getBundler(req).get('whatever', function () {});
         }, {
-            message: "undefined is not a function"
+            code: "EINVALIDTYPE"
         });
     });
 
