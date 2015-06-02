@@ -94,3 +94,36 @@ tap.test('first-run middleware', function (t) {
     });
 
 });
+
+tap.test('unconfigured middleware', function (t) {
+    var app = express();
+
+    app.use(makara({}));
+
+    app.get('/bundle', function (req, res, next) {
+        makara.getBundler(req).get('whatever', {}, function (err, data) {
+            t.ok(err);
+            t.notOk(data);
+            next();
+        });
+
+        t.throws(function () {
+            makara.getBundler(req).get('whatever');
+        }, {
+            message: "undefined is not a function"
+        });
+
+        t.throws(function () {
+            makara.getBundler(req).get('whatever', function () {});
+        }, {
+            message: "undefined is not a function"
+        });
+    });
+
+    supertest(app).get('/bundle').end(function (err, res) {
+        t.end();
+    });
+
+});
+
+tap.plan(2);
