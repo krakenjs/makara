@@ -19,11 +19,18 @@
 
 var makeViewClass = require('engine-munger');
 
+var WeakMap = require('es6-weak-map');
+var bundalo = require('bundalo');
+
+var associated = new WeakMap();
+
 module.exports = function setupViewClass(options) {
     var opts = {};
     opts['.properties'] = {};
     opts['.js'] = {};
     opts['.dust'] = {};
+
+    var bundler;
 
     if (options.i18n) {
         opts['.properties'].root = [].concat(options.i18n.contentPath);
@@ -34,6 +41,10 @@ module.exports = function setupViewClass(options) {
         opts['.js'].i18n = {
             fallback: options.i18n.fallback
         };
+
+        bundler = bundalo({
+            contentPath: options.i18n.contentPath
+        });
     }
 
     if (options.specialization) {
@@ -48,9 +59,34 @@ module.exports = function setupViewClass(options) {
             req.app.set('view', makeViewClass(opts));
             hasConfiguredApp = true;
         }
+
+        associated.set(req, {
+            get: function (bundle, model, cb) {
+                if (!bundler) {
+                    return cb(new Error('i18n is not configured'));
+                } else {
+                    return bundler.get({bundle: bundle, locality: req.locale || options.i18n.fallback, model: model}, cb);
+                }
+            }
+        });
+
+        res.on('finish', function () {
+            associated.delete(req);
+        });
+
         next();
     };
 };
 
+function getBundler(req) {
+    var bundler = associated.get(req);
+    if (!bundler) {
+        throw new Error("No bundle reader available");
+    } else {
+        return bundler;
+    }
+}
+
 module.exports.js = require('adaro').js;
 module.exports.dust = require('adaro').dust;
+module.exports.getBundler = getBundler;
