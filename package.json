@@ -63,7 +63,7 @@
     "tap": "^1.2.0"
   },
   "dependencies": {
-    "adaro": "^1.0.0-9",
+    "adaro": "^1.0.0-15",
     "aproba": "^1.0.1",
     "bundalo": "^0.2.9",
     "engine-munger": "v1.0.0-3",
