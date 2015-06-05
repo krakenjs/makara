@@ -20,11 +20,36 @@
 var tap = require('tap');
 var makara = require('../');
 
-tap.test('check that dust renderers are exported', function (t) {
-    t.type(makara.js, 'function');
-    t.type(makara.dust, 'function');
-    t.type(makara, 'function');
-    t.type(makara.getBundler, 'function');
-    t.type(makara.formatPath, 'function');
+tap.test('formatPath', function (t) {
+    t.throws(function () {
+        makara.formatPath();
+    }, {
+        code: 'EINVALIDTYPE'
+    });
+
+    t.throws(function () {
+        makara.formatPath({});
+    }, {
+        code: 'EINVALIDTYPE'
+    });
+
+    t.equal(makara.formatPath({
+        langtag: {
+            language: {
+                language: 'en', extlang: []
+            },
+            script: null,
+            region: 'US',
+            variant: [],
+            extension: [],
+            privateuse: []
+        },
+        privateuse: [],
+        grandfathered: {
+            irregular: null, regular: null
+        }
+    }), 'US/en');
+
     t.end();
 });
+
