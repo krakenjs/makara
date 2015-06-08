@@ -36,7 +36,7 @@ module.exports = function setupViewClass(options) {
     if (options.i18n) {
         opts['.properties'].root = [].concat(options.i18n.contentPath);
         opts['.properties'].i18n = {
-            formatPath: formatPath,
+            formatPath: options.i18n.formatPath || formatPath,
             fallback: options.i18n.fallback
         };
 
