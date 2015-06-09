@@ -1,7 +1,11 @@
 Makara
 ======
 
-A module to set up internationalization in Kraken.
+A module to set up internationalization in Kraken and Express.js apps.
+
+`makara` is the more opinionated configuration of its component parts, suitable for dropping into an express application and working with relatively little configuration.
+
+It consists of [bundalo] for loading localized strings for use by application logic, [engine-munger] for controlling the lookup of templates and associated localized strings, and [adaro] as the template engine, connecting [dustjs-linkedin] to Express.
 
 Lead Maintainer: [Aria Stewart]
 
@@ -10,7 +14,6 @@ Lead Maintainer: [Aria Stewart]
 
 Using Makara
 ------------
-
 
 ```javascript
 var i18n = require('makara');
@@ -156,17 +159,17 @@ There are some edge cases worth mentioning:
 Case 1:
 
 ```
-key.subkey=foo
-key.subkey[bar]=baz
+key.subkey=value
+key.subkey[property]=value2
 ```
 
-In this case, subkey is created originally as a string value but is then
-overridden as a map. The original foo value will be discarded.
+In this case, `key.subkey` is created originally as a string value but is then
+overridden as a map. The original value will be discarded.
 
 Case 2:
 ```
 key.subkey[0]=1
-key.subkey[foo]=bar
+key.subkey[property]=value
 ```
 
 In this case, `key.subkey` is created originally as a list but is then converted
@@ -215,3 +218,7 @@ Please see the [contribution guide]
 [contribution guide]: CONTRIBUTING.md
 [@provide]: https://github.com/rragan/dust-motes/tree/master/src/helpers/data/provide
 [advanced helper]: ADVANCED.md
+[adaro]: https://github.com/krakenjs/adaro
+[engine-munger]: https://github.com/krakenjs/engine-munger
+[bundalo]: https://github.com/krakenjs/bundalo
+[dustjs-linkedin]: http://dustjs.com/
