@@ -15,19 +15,12 @@ Lead Maintainer: [Aria Stewart]
 Using Makara
 ------------
 
-```javascript
-var i18n = require('makara');
-
-var provider = i18n.create(config);
-provider.getBundle('index', 'en_US', function (err, bundle) {
-    var string = bundle.get('key');
-});
-```
-
+Here's a tiny but complete application
 
 ```javascript
 var express = require('express');
 var makara = require('makara');
+var path = require('path');
 
 var app = express();
 
@@ -35,8 +28,13 @@ var helpers = [ 'dust-makara-helpers' ];
 app.engine('dust', makara.dust({ cache: false, helpers: helpers }));
 app.engine('js', makara.js({ cache: true, helpers: helpers }));
 
-app.set('views', 'path/to/templates');
-app.set('view engine', 'dust');
+app.set('views', path.resolve(__dirname, 'public/templates'));
+app.configure('development', function () {
+    app.set('view engine', 'dust');
+});
+app.configure('production', function () {
+    app.set('view engine', 'js');
+});
 
 app.use(makara({
     i18n: {
@@ -67,6 +65,8 @@ app.get('/path', function (req, res) {
 ```
 
 
+
+
 Configuration
 -------------
 
@@ -94,6 +94,8 @@ The root of the `.properties` content files is the locales folder at the top lev
 
 If you have a top level `index.dust` file, its content `.properties` file will be at `locales/US/en/index.properties` This holds all the external content strings used by that template. If your template is at `widgets/display.dust` then the content for US English will be at `locales/US/en/widgets/display.properties`.  If you have content you want to share across pages, then you should factor out use of that content into a separate partial and use that partial to achieve
 content sharing.
+
+You can override this filename mapping by providing a `formatPath` function to the makara i18n configuration.
 
 ### What's in a `.properties` file
 
