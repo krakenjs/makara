@@ -7,3 +7,5 @@ logs
 test/fixtures/.build
 *.log
 *.iml
+.nyc_output
+coverage
