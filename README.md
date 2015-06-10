@@ -64,9 +64,6 @@ app.get('/path', function (req, res) {
 });
 ```
 
-
-
-
 Configuration
 -------------
 
@@ -98,6 +95,8 @@ content sharing.
 You can override this filename mapping by providing a `formatPath` function to the makara i18n configuration.
 
 ### What's in a `.properties` file
+
+The parser for this file format is [spud].
 
 The format is simple: `key=value` with one message per line encoded as UTF-8.  Comments are prefixed with `#`.
 
@@ -224,3 +223,4 @@ Please see the [contribution guide]
 [engine-munger]: https://github.com/krakenjs/engine-munger
 [bundalo]: https://github.com/krakenjs/bundalo
 [dustjs-linkedin]: http://dustjs.com/
+[spud]: https://github.com/krakenjs/spud
