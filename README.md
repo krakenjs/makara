@@ -71,7 +71,8 @@ The middleware that sets up the Express view engine replacement [engine-munger] 
 * `i18n.contentPath` - `String`, the root to search for content in. Required.
 * `i18n.formatPath` - `Function`, a function to convert a locale to a path fragment. Optional, defaults to one that returns `country/language`.
 * `i18n.fallback` - `String` or `Object` as [`bcp47`] creates, the locale to use when content isn't found for the locale requested. Required.
-* `enableMetadata` - `Boolean,` defaults to `false`. Sets up metadata editing tags for integration with in-place content editing systems.
+* `enableMetadata` - `Boolean`, defaults to `false`. Sets up metadata editing tags for integration with in-place content editing systems.
+* `specialization` - `Object`, the specialization rule map, in the form expected by [karka].
 * `cache` - `Boolean`, defaults to `false`. Whether the dust engine should cache its views.
 
 Content
@@ -224,3 +225,4 @@ Please see the [contribution guide]
 [bundalo]: https://github.com/krakenjs/bundalo
 [dustjs-linkedin]: http://dustjs.com/
 [spud]: https://github.com/krakenjs/spud
+[karka]: https://github.com/krakenjs/karka
