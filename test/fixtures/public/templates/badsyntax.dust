@@ -1,3 +1,0 @@
-{! Bad dust syntax as no closing section tag !}
-{#section}
-{name}

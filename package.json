@@ -1,10 +1,11 @@
 {
   "name": "makara",
-  "version": "1.0.0",
-  "description": "i18n support for dust.js templates",
+  "version": "2.0.0-5",
+  "description": "Kraken support for i18n and specialization in dust.js templates",
   "main": "index.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "nyc tap test/*.js && nyc report",
+    "coverage": "nyc report --reporter=lcov"
   },
   "repository": {
     "type": "git",
@@ -14,7 +15,9 @@
     "dust.js",
     "i18n",
     "internationalization",
+    "l10n",
     "localization",
+    "specialization",
     "templates"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
@@ -46,38 +49,24 @@
     {
       "name": "Dereck Quock",
       "email": "dquock@paypal.com"
-    }
-  ],
-  "licenses": [
+    },
     {
-      "type": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "name": "Aria Stewart",
+      "email": "ariastewart@paypal.com"
     }
   ],
+  "license": "Apache-2.0",
   "devDependencies": {
-    "adaro": "~0.1.4",
-    "chai": "^2.0.0",
-    "dustjs-helpers": "~1.5.0",
-    "dustjs-linkedin": "~2.5.0",
-    "express": "^3.4.0",
-    "grunt": "~0.4.1",
-    "grunt-cli": "^0.1.13",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-dustjs": "^1.2.1",
-    "grunt-simple-mocha": "~0.4.0",
-    "mocha": "^2.0.0"
+    "express": "^4.12.4",
+    "nyc": "^2.2.1",
+    "supertest": "^1.0.1",
+    "tap": "^1.2.0"
   },
   "dependencies": {
-    "findatag": "^1.0.0",
-    "graceful-fs": "~3.0.1",
-    "grunt-localizr": "^0.2.0",
-    "he": "^0.5.0",
-    "bluebird-q": "^1.0.0",
-    "spud": "^1.0.0"
-  },
-  "peerDependencies": {
-    "dustjs-linkedin": "~2.5.0",
-    "adaro": "~0.1.7"
+    "adaro": "^1.0.0-15",
+    "aproba": "^1.0.1",
+    "bundalo": "^0.2.9",
+    "engine-munger": "v1.0.0-6",
+    "es6-weak-map": "^1.0.2"
   }
 }

@@ -1,1 +1,0 @@
-<p>{@pre type="content" key="test.value" /}</p><p>{@helper attr="value"/} {randomData}</p><p>{@pre type="content" key="test.otherValue"/}</p><p>{@pre type="content" key="test.content"/}</p>
