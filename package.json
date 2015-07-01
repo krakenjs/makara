@@ -63,10 +63,10 @@
     "tap": "^1.2.0"
   },
   "dependencies": {
-    "adaro": "^1.0.0-15",
+    "adaro": "^1.0.0",
     "aproba": "^1.0.1",
     "bundalo": "^0.2.9",
-    "engine-munger": "v1.0.0-6",
+    "engine-munger": "v1.0.0",
     "es6-weak-map": "^1.0.2"
   }
 }
