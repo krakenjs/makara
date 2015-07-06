@@ -7,6 +7,7 @@
     "test": "nyc tap test/*.js && nyc report",
     "coverage": "nyc report --reporter=lcov"
   },
+  "homepage": "http://krakenjs.com/makara",
   "repository": {
     "type": "git",
     "url": "https://github.com/krakenjs/makara.git"
