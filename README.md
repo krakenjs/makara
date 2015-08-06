@@ -5,7 +5,9 @@ A module to set up internationalization in Kraken and Express.js apps.
 
 `makara` is the more opinionated configuration of its component parts, suitable for dropping into an express application and working with relatively little configuration.
 
-It consists of [bundalo] for loading localized strings for use by application logic, [engine-munger] for controlling the lookup of templates and associated localized strings, and [adaro] as the template engine, connecting [dustjs-linkedin] to Express.
+It consists of [bundalo] for loading localized strings for use by application logic, [engine-munger] for controlling the lookup of templates and associated localized strings, and includes [adaro] as a template engine, connecting [dustjs-linkedin] to Express.
+
+There's nothing inherently dust-centric about makara, but it does provide dust template engines as a default.
 
 Lead Maintainer: [Aria Stewart]
 
