@@ -73,6 +73,14 @@ module.exports = function setupViewClass(options) {
             associated.delete(req);
         });
 
+        res.once('error', function (err) {
+            associated.delete(req);
+
+            if (res.listeners('error').length === 0) {
+                res.emit('error', err);
+            }
+        });
+
         next();
     };
 };
