@@ -1,6 +1,6 @@
 {
   "name": "makara",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Kraken support for i18n and specialization in dust.js templates",
   "main": "index.js",
   "scripts": {
