@@ -39,6 +39,11 @@ module.exports = function setupViewClass(options) {
             formatPath: options.i18n.formatPath || formatPath,
             fallback: options.i18n.fallback
         };
+ 
+        opts['.js'].i18n = {
+            formatPath: options.i18n.formatPath || formatPath,
+            fallback: options.i18n.fallback
+        };
 
         bundler = bundalo({
             contentPath: options.i18n.contentPath
