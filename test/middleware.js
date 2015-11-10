@@ -95,6 +95,40 @@ tap.test('first-run middleware', function (t) {
 
 });
 
+tap.test('app.render', function (t) {
+    var app = express();
+
+    var middleware = makara({
+        i18n: {
+            contentPath: path.resolve(__dirname, 'fixtures', 'properties'),
+            fallback: 'en-US'
+        },
+        specialization: {
+            'spcl/jekyll': [
+                {
+                    is: 'spcl/hyde',
+                    when: {
+                        'whoAmI': 'badGuy'
+                    }
+                }
+            ]
+        }
+    });
+
+    middleware({app: app}, {on: function() {} }, function () { // Call the middleware so we get initialized.
+        app.engine('dust', makara.dust({ cache: false, helpers: [ 'dust-makara-helpers' ]}));
+
+        app.set('views', path.resolve(__dirname, 'fixtures/templates'));
+
+        app.render('test.dust', { locale: 'en-US' }, function (err, content) {
+            t.error(err);
+            t.equal(content, 'Hello, test');
+            t.end();
+        });
+    });
+});
+
+
 tap.test('unconfigured middleware', function (t) {
     var app = express();
 
@@ -126,4 +160,4 @@ tap.test('unconfigured middleware', function (t) {
 
 });
 
-tap.plan(2);
+tap.end();
