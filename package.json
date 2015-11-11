@@ -60,6 +60,8 @@
   "devDependencies": {
     "dust-makara-helpers": "^4.1.2",
     "express": "^4.12.4",
+    "mock-req": "^0.2.0",
+    "mock-res": "^0.3.0",
     "nyc": "^2.2.1",
     "supertest": "^1.0.1",
     "tap": "^1.2.0"
