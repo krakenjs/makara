@@ -1,0 +1,3 @@
+{@useContent bundle="test.properties"}
+	Hello, {@message key="test"/}
+{/useContent}
