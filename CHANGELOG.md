@@ -1,3 +1,7 @@
+##### unreleased
+
+- Fix: modify documentation for makara@v2 and the @provide helper. Resolves https://github.com/krakenjs/makara/issues/76
+
 ##### v1.0.0 - 20150312
 
 **Breaking changes**
