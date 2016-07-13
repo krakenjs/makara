@@ -27,16 +27,17 @@ var path = require('path');
 var app = express();
 
 var helpers = [ 'dust-makara-helpers' ];
+var env = process.env.NODE_ENV;
 app.engine('dust', makara.dust({ cache: false, helpers: helpers }));
 app.engine('js', makara.js({ cache: true, helpers: helpers }));
 
 app.set('views', path.resolve(__dirname, 'public/templates'));
-app.configure('development', function () {
+
+if (env === 'development') {
     app.set('view engine', 'dust');
-});
-app.configure('production', function () {
+} else {
     app.set('view engine', 'js');
-});
+}
 
 app.use(makara({
     i18n: {
