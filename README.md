@@ -208,7 +208,7 @@ This gives you more ability to work with both the list/map value and the element
 
 In addition to `mode="paired"` there is an alternate form, `mode="json"` This generates the content list or map as a standard JavaScript array or an object with properties, respectively.
 
-For more on using the `@provide` ([pulvus-provide](https://www.npmjs.com/package/pulvus-provide)) helper, see the [advanced helper] docs
+For more on using `mode="paired"` see the [advanced helper] docs.
 
 Contributing
 ------------
