@@ -27,7 +27,7 @@ Writing `{@message type="content" key="stateList" mode="paired" /}` results in
 
 Now we have this JSON inlined in our template. To make the data available to template code, we need to make it accessible to dust as if it was in the data model or passed as a parameter.
 
-`@provide` processes each dust named block (such as `{:stateList}` in our case) creating a parameter bearing the name of the block and holding a value formed by a `JSON.parse` of the body of the block. The result of this, in our example, is equivalent to putting a parameter named stateList with value of a JSON array holding all the state data into the context where dust can reference it. Note that you can only use the name within the main block of provide -- the template area right after `@provide` up to the first named block.
+`@provide` ([pulvus-provide](https://www.npmjs.com/package/pulvus-provide)) processes each dust named block (such as `{:stateList}` in our case) creating a parameter bearing the name of the block and holding a value formed by a `JSON.parse` of the body of the block. The result of this, in our example, is equivalent to putting a parameter named stateList with value of a JSON array holding all the state data into the context where dust can reference it. Note that you can only use the name within the main block of provide -- the template area right after `@provide` up to the first named block.
 
 It is not as complex as it sounds. Look at this code snippet that constructs a
 select dropdown of the states and marks one of them selected (assuming the

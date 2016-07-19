@@ -123,10 +123,9 @@ tap.test('app.render', function (t) {
 
     middleware(req, res, function () { // Call the middleware so we get initialized.
         app.engine('dust', makara.dust({ cache: false, helpers: [ 'dust-makara-helpers' ]}));
-
         app.set('views', path.resolve(__dirname, 'fixtures/templates'));
-
-        app.render('test.dust', { locale: 'en-US' }, function (err, content) {
+        app.set('view engine', 'dust');
+        app.render('test', {locale: 'en-US'}, function (err, content) {
             t.error(err);
             t.equal(content, 'Hello, test');
             t.end();

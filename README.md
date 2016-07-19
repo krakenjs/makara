@@ -27,16 +27,17 @@ var path = require('path');
 var app = express();
 
 var helpers = [ 'dust-makara-helpers' ];
+var env = process.env.NODE_ENV;
 app.engine('dust', makara.dust({ cache: false, helpers: helpers }));
 app.engine('js', makara.js({ cache: true, helpers: helpers }));
 
 app.set('views', path.resolve(__dirname, 'public/templates'));
-app.configure('development', function () {
+
+if (env === 'development') {
     app.set('view engine', 'dust');
-});
-app.configure('production', function () {
+} else {
     app.set('view engine', 'js');
-});
+}
 
 app.use(makara({
     i18n: {
@@ -207,7 +208,7 @@ This gives you more ability to work with both the list/map value and the element
 
 In addition to `mode="paired"` there is an alternate form, `mode="json"` This generates the content list or map as a standard JavaScript array or an object with properties, respectively.
 
-For more on using the `@provide` helper, see the [advanced helper] docs
+For more on using `mode="paired"` see the [advanced helper] docs.
 
 Contributing
 ------------
@@ -220,7 +221,7 @@ Please see the [contribution guide]
 [Build Status]: https://travis-ci.org/krakenjs/makara.svg?branch=master
 [`bcp47`]: http://npmjs.org/package/bcp47
 [contribution guide]: CONTRIBUTING.md
-[@provide]: https://github.com/rragan/dust-motes/tree/master/src/helpers/data/provide
+[@provide]: https://github.com/krakenjs/festucam/tree/master/src/helpers/data/provide
 [advanced helper]: ADVANCED.md
 [adaro]: https://github.com/krakenjs/adaro
 [engine-munger]: https://github.com/krakenjs/engine-munger
