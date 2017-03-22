@@ -108,7 +108,7 @@ Let's look at some samples and then use them to discuss various points.
 
 `index.properties` file:
 
-````
+```
 index.title=PayPal Merchant
 index.callToAction=Enroll now!
 index.greeting=Welcome {userName}
