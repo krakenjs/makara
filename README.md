@@ -1,5 +1,6 @@
-Makara
-======
+# Makara
+
+[![Build Status]][travis]
 
 A module to set up internationalization in Kraken and Express.js apps.
 
@@ -8,11 +9,6 @@ A module to set up internationalization in Kraken and Express.js apps.
 It consists of [bundalo] for loading localized strings for use by application logic, [engine-munger] for controlling the lookup of templates and associated localized strings, and includes [adaro] as a template engine, connecting [dustjs-linkedin] to Express.
 
 There's nothing inherently dust-centric about makara, but it does provide dust template engines as a default.
-
-Lead Maintainer: [Aria Stewart]
-
-[![Build Status]][travis]
-
 
 Using Makara
 ------------
@@ -70,7 +66,7 @@ app.get('/path', function (req, res) {
 Configuration
 -------------
 
-The middleware that sets up the Express view engine replacement [engine-munger] takes most of the configuration in `makara`. 
+The middleware that sets up the Express view engine replacement [engine-munger] takes most of the configuration in `makara`.
 * `i18n.contentPath` - `String`, the root to search for content in. Required.
 * `i18n.formatPath` - `Function`, a function to convert a locale to a path fragment. Optional, defaults to one that returns `country/language`.
 * `i18n.fallback` - `String` or `Object` as [`bcp47`] creates, the locale to use when content isn't found for the locale requested. Required.
