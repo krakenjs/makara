@@ -49,7 +49,8 @@ app.use(makara({
                 }
             }
         ]
-    }
+    },
+    localeContext: "makaraLocale"
 }));
 
 app.get('/path', function (req, res) {
@@ -73,6 +74,7 @@ The middleware that sets up the Express view engine replacement [engine-munger] 
 * `enableMetadata` - `Boolean`, defaults to `false`. Sets up metadata editing tags for integration with in-place content editing systems.
 * `specialization` - `Object`, the specialization rule map, in the form expected by [karka].
 * `cache` - `Boolean`, defaults to `false`. Whether the dust engine should cache its views.
+* `localeContext` - `String`, defaults to `locale`. Specifies the key to the locale information in `req` object.
 
 Content
 -------
