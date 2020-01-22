@@ -52,6 +52,7 @@ module.exports = function setupViewClass(options) {
     }
 
     var hasConfiguredApp = false;
+    var localeContext = options.localeContext || 'locale';
     return function (req, res, next) {
         if (!hasConfiguredApp) {
             req.app.set('view', makeViewClass(opts));
@@ -64,7 +65,7 @@ module.exports = function setupViewClass(options) {
                 if (!bundler) {
                     return cb(new Error('i18n is not configured'));
                 } else {
-                    return bundler.get({bundle: bundle, locality: req.locale || options.i18n.fallback, model: model}, cb);
+                    return bundler.get({bundle: bundle, locality: req[localeContext] || options.i18n.fallback, model: model}, cb);
                 }
             }
         });

@@ -133,6 +133,28 @@ tap.test('app.render', function (t) {
     });
 });
 
+tap.test('custom locale property path', function (t) {
+    var app = express();
+    app.use(makara({
+        i18n: {
+            contentPath: path.resolve(__dirname, 'fixtures', 'properties'),
+            fallback: 'en-US'
+        },
+        localeContext: "makaraLocaleString"
+    }));
+    app.get('/bundle', function (req, res, next) {
+        req.makaraLocaleString = 'es-GROUPBLATAM';
+        makara.getBundler(req).get('test', {}, function (err, data) {
+            t.notOk(err);
+            t.ok(data);
+            t.equal(data.test, 'prueba');
+            return next();
+        });
+    });
+    supertest(app).get('/bundle').end(function () {
+        t.end();
+    });
+});
 
 tap.test('unconfigured middleware', function (t) {
     var app = express();
@@ -149,13 +171,13 @@ tap.test('unconfigured middleware', function (t) {
         t.throws(function () {
             makara.getBundler(req).get('whatever');
         }, {
-            code: "EMISSINGARG"
+            code: "EWRONGARGCOUNT"
         });
 
         t.throws(function () {
             makara.getBundler(req).get('whatever', function () {});
         }, {
-            code: "EINVALIDTYPE"
+            code: "EWRONGARGCOUNT"
         });
     });
 

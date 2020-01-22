@@ -1,5 +1,6 @@
 ##### unreleased
 
+- Add 'localeContext' to config object to choose locale information
 - Fix: modify documentation for makara@v2 and the @provide helper. Resolves https://github.com/krakenjs/makara/issues/76
 - Fix: change express configuration example in README per https://github.com/expressjs/express/wiki/Migrating-from-3.x-to-4.x#removed-in-express-4
 
