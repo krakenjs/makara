@@ -149,13 +149,13 @@ tap.test('unconfigured middleware', function (t) {
         t.throws(function () {
             makara.getBundler(req).get('whatever');
         }, {
-            code: "EMISSINGARG"
+            code: "EWRONGARGCOUNT"
         });
 
         t.throws(function () {
             makara.getBundler(req).get('whatever', function () {});
         }, {
-            code: "EINVALIDTYPE"
+            code: "EWRONGARGCOUNT"
         });
     });
 
